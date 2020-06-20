@@ -1,5 +1,6 @@
 using FluentAssertions;
 using HanabiSolver.Library.Game;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -49,11 +50,11 @@ namespace HanabiSolver.Library.Tests
 		}
 
 		[Fact]
-		public void DrawFromEmptyReturnsNothing()
+		public void DrawFromEmptyThrowsException()
 		{
-			var card = Deck.Empty.Draw();
-
-			card.Should().Be(null);
+			Deck.Empty
+				.Invoking(deck => deck.Draw())
+				.Should().Throw<InvalidOperationException>();
 		}
 
 		[Fact]

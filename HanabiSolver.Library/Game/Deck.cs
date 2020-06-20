@@ -14,10 +14,9 @@ namespace HanabiSolver.Library.Game
 			this.cards = new Queue<Card>(cards);
 		}
 
-		public Card? Draw()
+		public Card Draw()
 		{
-			cards.TryDequeue(out var result);
-			return result;
+			return cards.Dequeue();
 		}
 
 		public bool CanDraw() => cards.Any();
