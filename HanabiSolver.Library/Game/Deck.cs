@@ -9,6 +9,8 @@ namespace HanabiSolver.Library.Game
 
 		public IReadOnlyCollection<Card> Cards => cards;
 
+		public Card Top => cards.Peek();
+
 		public Deck(IEnumerable<Card> cards)
 		{
 			this.cards = new Queue<Card>(cards);
