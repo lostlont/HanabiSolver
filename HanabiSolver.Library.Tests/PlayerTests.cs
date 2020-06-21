@@ -12,8 +12,7 @@ namespace HanabiSolver.Library.Tests
 	{
 		private readonly List<Card> cardsInHand;
 		private readonly List<Card> cardsInDeck;
-		private readonly Deck deck;
-		private readonly List<Card> discardPile;
+		private readonly Table table;
 		private readonly Player player;
 
 		public PlayerTests()
@@ -31,11 +30,12 @@ namespace HanabiSolver.Library.Tests
 				new Card(Suite.Green, Number.Two),
 				new Card(Suite.Blue, Number.Three),
 			};
-			deck = new Deck(cardsInDeck);
 
-			discardPile = new List<Card>();
+			var deck = new Deck(cardsInDeck);
+			var discardPile = new Pile();
+			table = new Table(deck, discardPile);
 
-			player = new Player(cardsInHand, deck, discardPile);
+			player = new Player(cardsInHand, table);
 		}
 
 		[Fact]
@@ -44,7 +44,7 @@ namespace HanabiSolver.Library.Tests
 			player.Discard(cardsInHand[0]);
 
 			var expectedCards = new List<Card> { cardsInHand[0] };
-			discardPile.Should().Equal(expectedCards);
+			table.DiscardPile.Cards.Should().Equal(expectedCards);
 		}
 
 		[Fact]
@@ -64,7 +64,7 @@ namespace HanabiSolver.Library.Tests
 			var expectedDeck = new Deck(cardsInDeck);
 			expectedDeck.Draw();
 
-			deck.Cards.Should().Equal(expectedDeck.Cards);
+			table.Deck.Cards.Should().Equal(expectedDeck.Cards);
 		}
 
 		[Theory]
@@ -72,7 +72,7 @@ namespace HanabiSolver.Library.Tests
 		[InlineData(2)]
 		public void DiscardMovesFromTopOfDeckToBeginningOfHand(int cardIndexToDiscard)
 		{
-			var newCard = deck.Top;
+			var newCard = table.Deck.Top;
 
 			player.Discard(cardsInHand[cardIndexToDiscard]);
 
