@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using HanabiSolver.Library.Extensions;
 using HanabiSolver.Library.Game;
+using HanabiSolver.Library.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace HanabiSolver.Library.Tests
 	{
 		private readonly List<Card> cardsInHand;
 		private readonly List<Card> cardsInDeck;
-		private readonly Table table;
+		private readonly ITable table;
 		private readonly Player player;
 
 		public PlayerTests()
@@ -43,7 +44,7 @@ namespace HanabiSolver.Library.Tests
 		{
 			player.Discard(cardsInHand[0]);
 
-			var expectedCards = new List<Card> { cardsInHand[0] };
+			var expectedCards = cardsInHand.Take(1);
 			table.DiscardPile.Cards.Should().Equal(expectedCards);
 		}
 
@@ -82,7 +83,7 @@ namespace HanabiSolver.Library.Tests
 			player.Cards.Should().Equal(expectedCards);
 		}
 
-
+		// TODO Test tokens.
 		// TODO Discarding should add token.
 		// TODO Test discarding when tokens are full?
 	}

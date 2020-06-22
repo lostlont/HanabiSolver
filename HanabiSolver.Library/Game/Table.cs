@@ -1,6 +1,8 @@
-﻿namespace HanabiSolver.Library.Game
+﻿using HanabiSolver.Library.Interfaces;
+
+namespace HanabiSolver.Library.Game
 {
-	public class Table
+	public class Table : ITable
 	{
 		public Deck Deck { get; }
 		public Pile DiscardPile { get; }

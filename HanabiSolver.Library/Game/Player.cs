@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HanabiSolver.Library.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,11 +8,11 @@ namespace HanabiSolver.Library.Game
 	public class Player
 	{
 		private readonly List<Card> cards;
-		private readonly Table table;
+		private readonly ITable table;
 
 		public IReadOnlyCollection<Card> Cards => cards;
 
-		public Player(IEnumerable<Card> cards, Table table)
+		public Player(IEnumerable<Card> cards, ITable table)
 		{
 			this.cards = cards.ToList();
 			this.table = table;
