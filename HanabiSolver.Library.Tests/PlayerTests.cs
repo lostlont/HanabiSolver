@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using HanabiSolver.Library.Extensions;
 using HanabiSolver.Library.Game;
-using HanabiSolver.Library.Interfaces;
+using HanabiSolver.Library.Tests.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +11,9 @@ namespace HanabiSolver.Library.Tests
 {
 	public class PlayerTests
 	{
-		private readonly List<Card> cardsInHand;
-		private readonly List<Card> cardsInDeck;
-		private readonly ITable table;
-		private readonly Player player;
+		private readonly IReadOnlyList<Card> cardsInHand;
+		private readonly IReadOnlyList<Card> cardsInDeck;
+		private readonly PlayerBuilder playerBuilder;
 
 		public PlayerTests()
 		{
@@ -35,23 +34,27 @@ namespace HanabiSolver.Library.Tests
 			var deck = new Deck(cardsInDeck);
 			var discardPile = new Pile();
 			var tokens = new Tokens(3, 1);
-			table = new Table(deck, discardPile, tokens);
+			var tableBuilder = new TableBuilder(() => deck, () => discardPile, () => tokens);
 
-			player = new Player(cardsInHand, table);
+			playerBuilder = new PlayerBuilder(cardsInHand, tableBuilder);
 		}
 
 		[Fact]
 		public void DiscardAddsCardToDiscardPile()
 		{
+			var player = playerBuilder.Build();
+			
 			player.Discard(cardsInHand[0]);
 
 			var expectedCards = cardsInHand.Take(1);
-			table.DiscardPile.Cards.Should().Equal(expectedCards);
+			player.Table.DiscardPile.Cards.Should().Equal(expectedCards);
 		}
 
 		[Fact]
 		public void DiscardingUnownedCardThrowsException()
 		{
+			var player = playerBuilder.Build();
+
 			var unownedCard = new Card(Suite.Blue, Number.Five);
 			player
 				.Invoking(player => player.Discard(unownedCard))
@@ -61,12 +64,14 @@ namespace HanabiSolver.Library.Tests
 		[Fact]
 		public void DiscardDrawsFromDeck()
 		{
+			var player = playerBuilder.Build();
+
 			player.Discard(cardsInHand[0]);
 
 			var expectedDeck = new Deck(cardsInDeck);
 			expectedDeck.Draw();
 
-			table.Deck.Cards.Should().Equal(expectedDeck.Cards);
+			player.Table.Deck.Cards.Should().Equal(expectedDeck.Cards);
 		}
 
 		[Theory]
@@ -74,7 +79,8 @@ namespace HanabiSolver.Library.Tests
 		[InlineData(2)]
 		public void DiscardMovesFromTopOfDeckToBeginningOfHand(int cardIndexToDiscard)
 		{
-			var newCard = table.Deck.Top;
+			var player = playerBuilder.Build();
+			var newCard = player.Table.Deck.Top;
 
 			player.Discard(cardsInHand[cardIndexToDiscard]);
 
@@ -87,9 +93,11 @@ namespace HanabiSolver.Library.Tests
 		[Fact]
 		public void DiscardProvidesToken()
 		{
+			var player = playerBuilder.Build();
+
 			player.Discard(cardsInHand[0]);
 
-			table.Tokens.Amount.Should().Be(2);
+			player.Table.Tokens.Amount.Should().Be(2);
 		}
 
 		// TODO Test tokens.
