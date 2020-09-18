@@ -50,13 +50,13 @@ namespace HanabiSolver.Library.Tests
 		}
 
 		[Fact]
-		public void RemoveFromEmptyThrowsException()
+		public void RemoveFromEmptyDoesNotChange()
 		{
 			var tokens = new Tokens(3, 0);
 
-			tokens
-				.Invoking(tokens => tokens.Remove())
-				.Should().Throw<InvalidOperationException>();
+			tokens.Remove();
+
+			tokens.Amount.Should().Be(0);
 		}
 
 		[Fact]
@@ -70,15 +70,13 @@ namespace HanabiSolver.Library.Tests
 		}
 
 		[Fact]
-		public void AddToFullThrowsException()
+		public void AddToFullDoesNotChange()
 		{
 			var tokens = new Tokens(3);
 
-			tokens
-				.Invoking(tokens => tokens.Add())
-				.Should().Throw<InvalidOperationException>();
-		}
+			tokens.Add();
 
-		// TODO Change exceptions to silent ignore.
+			tokens.Amount.Should().Be(3);
+		}
 	}
 }

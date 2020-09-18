@@ -28,18 +28,12 @@ namespace HanabiSolver.Library.Game
 
 		public void Remove()
 		{
-			if (Amount <= 0)
-				throw new InvalidOperationException();
-
-			Amount -= 1;
+			Amount = Math.Max(Amount - 1, 0);
 		}
 
 		public void Add()
 		{
-			if (Amount >= MaxAmount)
-				throw new InvalidOperationException();
-
-			Amount += 1;
+			Amount = Math.Min(Amount + 1, MaxAmount);
 		}
 	}
 }
