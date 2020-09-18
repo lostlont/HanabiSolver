@@ -6,5 +6,6 @@ namespace HanabiSolver.Library.Interfaces
 	{
 		Deck Deck { get; }
 		Pile DiscardPile { get; }
+		Tokens Tokens { get; }
 	}
 }

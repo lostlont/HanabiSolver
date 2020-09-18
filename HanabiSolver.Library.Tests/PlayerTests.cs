@@ -34,7 +34,8 @@ namespace HanabiSolver.Library.Tests
 
 			var deck = new Deck(cardsInDeck);
 			var discardPile = new Pile();
-			table = new Table(deck, discardPile);
+			var tokens = new Tokens(3, 1);
+			table = new Table(deck, discardPile, tokens);
 
 			player = new Player(cardsInHand, table);
 		}
@@ -83,8 +84,15 @@ namespace HanabiSolver.Library.Tests
 			player.Cards.Should().Equal(expectedCards);
 		}
 
+		[Fact]
+		public void DiscardProvidesToken()
+		{
+			player.Discard(cardsInHand[0]);
+
+			table.Tokens.Amount.Should().Be(2);
+		}
+
 		// TODO Test tokens.
-		// TODO Discarding should add token.
 		// TODO Test discarding when tokens are full?
 	}
 }
