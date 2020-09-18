@@ -78,5 +78,7 @@ namespace HanabiSolver.Library.Tests
 				.Invoking(tokens => tokens.Add())
 				.Should().Throw<InvalidOperationException>();
 		}
+
+		// TODO Change exceptions to silent ignore.
 	}
 }
