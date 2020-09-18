@@ -8,14 +8,14 @@ namespace HanabiSolver.Library.Game
 	public class Player
 	{
 		private readonly List<Card> cards;
-		private readonly ITable table;
 
 		public IReadOnlyCollection<Card> Cards => cards;
+		public ITable Table { get; }
 
 		public Player(IEnumerable<Card> cards, ITable table)
 		{
 			this.cards = cards.ToList();
-			this.table = table;
+			Table = table;
 		}
 
 		public void Discard(Card card)
@@ -24,9 +24,9 @@ namespace HanabiSolver.Library.Game
 			if (!removed)
 				throw new InvalidOperationException();
 
-			table.DiscardPile.Add(card);
+			Table.DiscardPile.Add(card);
 
-			var newCard = table.Deck.Draw();
+			var newCard = Table.Deck.Draw();
 			cards.Insert(0, newCard);
 		}
 	}
