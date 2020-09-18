@@ -26,12 +26,12 @@ namespace HanabiSolver.Library.Game
 				: throw new ArgumentOutOfRangeException(nameof(amount));
 		}
 
-		public void Remove()
+		public void Use()
 		{
 			Amount = Math.Max(Amount - 1, 0);
 		}
 
-		public void Add()
+		public void Replenish()
 		{
 			Amount = Math.Min(Amount + 1, MaxAmount);
 		}

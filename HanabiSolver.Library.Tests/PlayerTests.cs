@@ -91,7 +91,7 @@ namespace HanabiSolver.Library.Tests
 		}
 
 		[Fact]
-		public void DiscardProvidesToken()
+		public void DiscardReplenishesToken()
 		{
 			var player = playerBuilder.Build();
 
@@ -101,6 +101,7 @@ namespace HanabiSolver.Library.Tests
 		}
 
 		// TODO Test tokens.
-		// TODO Test discarding when tokens are full?
+		// TODO Test playing cards.
+		// TODO Test giving information.
 	}
 }

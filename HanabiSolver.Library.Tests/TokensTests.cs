@@ -40,41 +40,41 @@ namespace HanabiSolver.Library.Tests
 		}
 
 		[Fact]
-		public void RemoveDecreasesAmount()
+		public void UseDecreasesAmount()
 		{
 			var tokens = new Tokens(3);
 
-			tokens.Remove();
+			tokens.Use();
 
 			tokens.Amount.Should().Be(2);
 		}
 
 		[Fact]
-		public void RemoveFromEmptyDoesNotChange()
+		public void UseOnEmptyDoesNothing()
 		{
 			var tokens = new Tokens(3, 0);
 
-			tokens.Remove();
+			tokens.Use();
 
 			tokens.Amount.Should().Be(0);
 		}
 
 		[Fact]
-		public void AddIncreasesAmount()
+		public void ReplenishIncreasesAmount()
 		{
 			var tokens = new Tokens(3, 0);
 
-			tokens.Add();
+			tokens.Replenish();
 
 			tokens.Amount.Should().Be(1);
 		}
 
 		[Fact]
-		public void AddToFullDoesNotChange()
+		public void ReplenishFullDoesNothing()
 		{
 			var tokens = new Tokens(3);
 
-			tokens.Add();
+			tokens.Replenish();
 
 			tokens.Amount.Should().Be(3);
 		}

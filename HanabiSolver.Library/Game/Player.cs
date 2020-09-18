@@ -29,7 +29,7 @@ namespace HanabiSolver.Library.Game
 			var newCard = Table.Deck.Draw();
 			cards.Insert(0, newCard);
 
-			Table.Tokens.Add();
+			Table.Tokens.Replenish();
 		}
 	}
 }
