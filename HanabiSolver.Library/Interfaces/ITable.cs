@@ -1,4 +1,5 @@
 ﻿using HanabiSolver.Library.Game;
+using System.Collections.Generic;
 
 namespace HanabiSolver.Library.Interfaces
 {
@@ -7,5 +8,6 @@ namespace HanabiSolver.Library.Interfaces
 		Deck Deck { get; }
 		Pile DiscardPile { get; }
 		Tokens Tokens { get; }
+		Dictionary<Suite, Pile> PlayedCards { get; }
 	}
 }

@@ -2,15 +2,16 @@
 {
 	public class Card
 	{
-		private readonly Suite suite;
 		private readonly Number number;
+
+		public Suite Suite { get; }
 
 		public Card(Suite suite, Number number)
 		{
-			this.suite = suite;
+			Suite = suite;
 			this.number = number;
 		}
 
-		public override string ToString() => $"Card({suite}, {number})";
+		public override string ToString() => $"Card({Suite}, {number})";
 	}
 }

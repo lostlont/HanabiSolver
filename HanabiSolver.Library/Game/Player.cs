@@ -31,5 +31,10 @@ namespace HanabiSolver.Library.Game
 
 			Table.Tokens.Replenish();
 		}
+
+		public void Play(Card card)
+		{
+			Table.PlayedCards[card.Suite].Add(card);
+		}
 	}
 }
