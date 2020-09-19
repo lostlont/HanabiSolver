@@ -10,7 +10,6 @@ namespace HanabiSolver.Library.Game
 		public IReadOnlyCollection<Card> Cards => cards;
 
 		public Card? Top => cards.LastOrDefault();
-		// TODO Directly test Top.
 
 		public void Add(Card card)
 		{
