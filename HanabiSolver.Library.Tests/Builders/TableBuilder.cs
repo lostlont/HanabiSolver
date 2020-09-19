@@ -24,5 +24,7 @@ namespace HanabiSolver.Library.Tests.Builders
 			var playedCards = PlayedCardsBuilder.Keys.ToDictionary(suite => suite, suite => PlayedCardsBuilder[suite]());
 			return new Table(deck, discardPile, tokens, playedCards);
 		}
+
+		// TODO Change all the Builders to have property-setters?
 	}
 }
