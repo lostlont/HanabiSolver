@@ -8,7 +8,7 @@ namespace HanabiSolver.Library.Tests
 	public partial class PlayerTests
 	{
 		[Fact]
-		public void PlayedCardGoesToCorrespondingSuitesTop()
+		public void PlayOneDropsToTopOfCorrespondingEmptySuite()
 		{
 			var cardToPlay = new Card(Suite.Blue, Number.One);
 			playerBuilder.Cards = new List<Card>

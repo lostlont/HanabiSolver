@@ -26,10 +26,11 @@ namespace HanabiSolver.Library.Tests
 				new Card(Suite.Blue, Number.Three),
 			};
 
-			var deck = new Deck(cardsInDeck);
-			var discardPile = new Pile();
-			var tokens = new Tokens(3, 1);
-			var tableBuilder = new TableBuilder(() => deck, () => discardPile, () => tokens);
+			var tableBuilder = new TableBuilder
+			{
+				DeckBuilder = () => new Deck(cardsInDeck),
+				TokensBuilder = () => new Tokens(3, 1),
+			};
 
 			playerBuilder = new PlayerBuilder(cardsInHand, tableBuilder);
 		}
