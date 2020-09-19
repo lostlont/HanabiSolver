@@ -5,7 +5,17 @@ namespace HanabiSolver.Library.Game
 {
 	public class Pile
 	{
-		private readonly List<Card> cards = new List<Card>();
+		private readonly List<Card> cards;
+
+		public Pile()
+			: this(Enumerable.Empty<Card>())
+		{
+		}
+
+		public Pile(IEnumerable<Card> cards)
+		{
+			this.cards = cards.ToList();
+		}
 
 		public IReadOnlyCollection<Card> Cards => cards;
 

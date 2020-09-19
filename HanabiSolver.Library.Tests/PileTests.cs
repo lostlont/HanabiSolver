@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using HanabiSolver.Library.Game;
-using HanabiSolver.Library.Tests.Builders;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -10,7 +9,6 @@ namespace HanabiSolver.Library.Tests
 	public class PileTests
 	{
 		private readonly IReadOnlyList<Card> cards;
-		private readonly PileBuilder pileBuilder;
 
 		public PileTests()
 		{
@@ -20,13 +18,12 @@ namespace HanabiSolver.Library.Tests
 				new Card(Suite.Green, Number.Two),
 				new Card(Suite.Red, Number.Three),
 			};
-			pileBuilder = new PileBuilder(cards);
 		}
 
 		[Fact]
 		public void CardsReturnsAllAddedCards()
 		{
-			var pile = pileBuilder.Build();
+			var pile = new Pile(cards);
 
 			pile.Cards.Should().BeEquivalentTo(cards);
 		}
@@ -34,7 +31,7 @@ namespace HanabiSolver.Library.Tests
 		[Fact]
 		public void TopReturnsLastAddedCard()
 		{
-			var pile = pileBuilder.Build();
+			var pile = new Pile(cards);
 
 			pile.Top.Should().Be(cards.Last());
 		}
@@ -42,8 +39,7 @@ namespace HanabiSolver.Library.Tests
 		[Fact]
 		public void TopReturnsNullOnEmpty()
 		{
-			pileBuilder.Cards = new List<Card>();
-			var pile = pileBuilder.Build();
+			var pile = new Pile();
 
 			pile.Top.Should().BeNull();
 		}
