@@ -27,5 +27,21 @@ namespace HanabiSolver.Library.Tests.Utils
 			};
 			values.Should().BeEquivalentTo(expectedValues);
 		}
+
+		[Fact]
+		public void NextProvidesSequentiallyNext()
+		{
+			var next = EnumUtils.Next(Test.A);
+
+			next.Should().Be(Test.B);
+		}
+
+		[Fact]
+		public void NextProvidesNothingForLast()
+		{
+			var next = EnumUtils.Next(Test.C);
+
+			next.Should().BeNull();
+		}
 	}
 }
