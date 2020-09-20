@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using HanabiSolver.Library.Extensions;
 using HanabiSolver.Library.Game;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,14 +45,17 @@ namespace HanabiSolver.Library.Tests
 			player.Table.PlayedCards[Suite.Blue].Cards.Should().BeEquivalentTo(expectedCards);
 		}
 
-		[Fact]
-		public void PlayAlreadyPlayedGivesFuseTokenAndDiscardsCard()
+		// TODO Use AsEnumerable()?
+
+		[Theory]
+		[InlineData(Number.One, Number.One)]
+		[InlineData(Number.Two, null)]
+		public void PlayWrongNumberGivesFuseTokenAndDiscardsCard(Number playedNumber, Number? lastNumber)
 		{
-			var cardToPlay = new Card(Suite.Blue, Number.One);
-			var cardsPlayed = new List<Card>
-			{
-				cardToPlay,
-			};
+			var cardToPlay = new Card(Suite.Blue, playedNumber);
+			var cardsPlayed = lastNumber.HasValue
+				? new Card(Suite.Blue, lastNumber.Value).AsEnumerable()
+				: Enumerable.Empty<Card>();
 			playerBuilder.TableBuilder.PlayedCardsBuilder[cardToPlay.Suite] = () => new Pile(cardsPlayed);
 			var player = playerBuilder.Build();
 
