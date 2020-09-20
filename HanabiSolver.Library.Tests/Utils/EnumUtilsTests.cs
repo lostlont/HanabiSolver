@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using HanabiSolver.Library.Utils;
 using System.Collections.Generic;
+using Xunit;
 
 namespace HanabiSolver.Library.Tests.Utils
 {
@@ -13,6 +14,7 @@ namespace HanabiSolver.Library.Tests.Utils
 			C,
 		}
 
+		[Fact]
 		public void ValuesProvidesValuesList()
 		{
 			var values = EnumUtils.Values<Test>();
