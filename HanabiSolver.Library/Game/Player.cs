@@ -36,7 +36,7 @@ namespace HanabiSolver.Library.Game
 		public void Play(Card card)
 		{
 			var pile = Table.PlayedCards[card.Suite];
-			if ((card.Number == Number.One && pile.Cards.None()) || (card.Number == pile.Cards.Last().Number.Next())) // TODO Refactor
+			if (CanPlay(card, pile))
 			{
 				pile.Add(card);
 			}
@@ -45,6 +45,12 @@ namespace HanabiSolver.Library.Game
 				Table.FuseTokens.Replenish();
 				Table.DiscardPile.Add(card);
 			}
+		}
+
+		private bool CanPlay(Card card, Pile pile)
+		{
+			return (card.Number == Number.One && pile.Cards.None())
+				|| (card.Number == pile.Cards.Last().Number.Next());
 		}
 	}
 }
