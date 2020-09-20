@@ -26,12 +26,12 @@ namespace HanabiSolver.Library.Tests
 		[Fact]
 		public void PlayNextDropsToTopOfCorrespondingSuiteWithFollowingCardOnTop()
 		{
-			var playedCards = new List<Card>
+			var cardsPlayed = new List<Card>
 			{
 				new Card(Suite.Blue, Number.One),
 			};
 			var cardToPlay = new Card(Suite.Blue, Number.Two);
-			playerBuilder.TableBuilder.PlayedCardsBuilder[Suite.Blue] = () => new Pile(playedCards);
+			playerBuilder.TableBuilder.PlayedCardsBuilder[Suite.Blue] = () => new Pile(cardsPlayed);
 			playerBuilder.Cards = new List<Card>
 			{
 				cardToPlay,
@@ -40,8 +40,26 @@ namespace HanabiSolver.Library.Tests
 
 			player.Play(cardToPlay);
 
-			var expectedCards = playedCards.Append(cardToPlay);
+			var expectedCards = cardsPlayed.Append(cardToPlay);
 			player.Table.PlayedCards[Suite.Blue].Cards.Should().BeEquivalentTo(expectedCards);
+		}
+
+		[Fact]
+		public void PlayAlreadyPlayedGivesFuseTokenAndDiscardsCard()
+		{
+			var cardToPlay = new Card(Suite.Blue, Number.One);
+			var cardsPlayed = new List<Card>
+			{
+				cardToPlay,
+			};
+			playerBuilder.TableBuilder.PlayedCardsBuilder[cardToPlay.Suite] = () => new Pile(cardsPlayed);
+			var player = playerBuilder.Build();
+
+			player.Play(cardToPlay);
+
+			player.Table.PlayedCards[cardToPlay.Suite].Cards.Should().BeEquivalentTo(cardsPlayed);
+			player.Table.FuseTokens.Amount.Should().Be(1);
+			player.Table.DiscardPile.Top.Should().Be(cardToPlay);
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using HanabiSolver.Library.Interfaces;
+﻿using HanabiSolver.Library.Extensions;
+using HanabiSolver.Library.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,16 @@ namespace HanabiSolver.Library.Game
 
 		public void Play(Card card)
 		{
-			Table.PlayedCards[card.Suite].Add(card);
+			var pile = Table.PlayedCards[card.Suite];
+			if ((card.Number == Number.One && pile.Cards.None()) || (card.Number == pile.Cards.Last().Number.Next())) // TODO Refactor
+			{
+				pile.Add(card);
+			}
+			else
+			{
+				Table.FuseTokens.Replenish();
+				Table.DiscardPile.Add(card);
+			}
 		}
 	}
 }
