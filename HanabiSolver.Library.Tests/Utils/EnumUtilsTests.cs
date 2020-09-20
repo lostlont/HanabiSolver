@@ -43,5 +43,21 @@ namespace HanabiSolver.Library.Tests.Utils
 
 			next.Should().BeNull();
 		}
+
+		[Fact]
+		public void PreviousProvidesSequentiallyPrevious()
+		{
+			var previous = EnumUtils.Previous(Test.B);
+
+			previous.Should().Be(Test.A);
+		}
+
+		[Fact]
+		public void PreviousProvidesNothingForFirst()
+		{
+			var previous = EnumUtils.Previous(Test.A);
+
+			previous.Should().BeNull();
+		}
 	}
 }
