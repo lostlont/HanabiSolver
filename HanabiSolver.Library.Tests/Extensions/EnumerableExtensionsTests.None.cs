@@ -6,30 +6,8 @@ using Xunit;
 
 namespace HanabiSolver.Library.Tests.Extensions
 {
-	public class EnumerableExtensionsTests
+	public partial class EnumerableExtensionsTests
 	{
-		[Fact]
-		public void AsEnumerableHasTheSameElements()
-		{
-			var character = 'c';
-
-			var enumerable = character.AsEnumerable();
-
-			var expectedValues = new List<char> { 'c' };
-			enumerable.Should().BeEquivalentTo(expectedValues);
-		}
-
-		[Fact]
-		public void ExceptAtSkipsTheElementAtIndexUsed()
-		{
-			var characters = new List<char> { 'a', 'b', 'c' };
-
-			var values = characters.ExceptAt(1);
-
-			var expectedValues = new List<char> { 'a', 'c' };
-			values.Should().BeEquivalentTo(expectedValues);
-		}
-
 		[Fact]
 		public void NoneIsTrueForEmpty()
 		{
