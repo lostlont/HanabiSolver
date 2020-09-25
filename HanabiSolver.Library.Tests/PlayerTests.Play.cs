@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using HanabiSolver.Library.Extensions;
 using HanabiSolver.Library.Game;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -13,10 +12,8 @@ namespace HanabiSolver.Library.Tests
 		public void PlayOneDropsToTopOfCorrespondingEmptySuite()
 		{
 			var cardToPlay = new Card(Suite.Blue, Number.One);
-			playerBuilder.Cards = new List<Card>
-			{
-				cardToPlay,
-			};
+
+			playerBuilder.Cards = cardToPlay.AsEnumerable();
 			var player = playerBuilder.Build();
 
 			player.Play(cardToPlay);
@@ -27,16 +24,11 @@ namespace HanabiSolver.Library.Tests
 		[Fact]
 		public void PlayNextDropsToTopOfCorrespondingSuiteWithFollowingCardOnTop()
 		{
-			var cardsPlayed = new List<Card>
-			{
-				new Card(Suite.Blue, Number.One),
-			};
+			var cardsPlayed = new Card(Suite.Blue, Number.One).AsEnumerable();
 			var cardToPlay = new Card(Suite.Blue, Number.Two);
+
 			playerBuilder.TableBuilder.PlayedCardsBuilder[Suite.Blue] = () => new Pile(cardsPlayed);
-			playerBuilder.Cards = new List<Card>
-			{
-				cardToPlay,
-			};
+			playerBuilder.Cards = cardToPlay.AsEnumerable();
 			var player = playerBuilder.Build();
 
 			player.Play(cardToPlay);
@@ -45,17 +37,16 @@ namespace HanabiSolver.Library.Tests
 			player.Table.PlayedCards[Suite.Blue].Cards.Should().BeEquivalentTo(expectedCards);
 		}
 
-		// TODO Use AsEnumerable()?
-
 		[Theory]
 		[InlineData(Number.One, Number.One)]
 		[InlineData(Number.Two, null)]
 		public void PlayWrongNumberGivesFuseTokenAndDiscardsCard(Number playedNumber, Number? lastNumber)
 		{
 			var cardToPlay = new Card(Suite.Blue, playedNumber);
-			var cardsPlayed = lastNumber.HasValue
-				? new Card(Suite.Blue, lastNumber.Value).AsEnumerable()
-				: Enumerable.Empty<Card>();
+			var cardsPlayed = lastNumber
+				.ExistingAsEnumerable()
+				.Select(n => new Card(Suite.Blue, n));
+
 			playerBuilder.TableBuilder.PlayedCardsBuilder[cardToPlay.Suite] = () => new Pile(cardsPlayed);
 			var player = playerBuilder.Build();
 
