@@ -17,6 +17,5 @@ namespace HanabiSolver.Library.Tests.Extensions
 			var expectedValues = new List<char> { 'c' };
 			enumerable.Should().BeEquivalentTo(expectedValues);
 		}
-
 	}
 }
