@@ -49,8 +49,10 @@ namespace HanabiSolver.Library.Game
 
 		private bool CanPlay(Card card, Pile pile)
 		{
-			return (card.Number == Number.One && pile.Cards.None())
-				|| (card.Number == pile.Cards.Last().Number.Next());
+			var lastNumber = pile.Cards.LastOrDefault()?.Number;
+			var expectedNextNumber = lastNumber?.Next() ?? Number.One;
+
+			return card.Number == expectedNextNumber;
 		}
 	}
 }
