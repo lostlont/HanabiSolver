@@ -61,13 +61,13 @@ namespace HanabiSolver.Library.Tests
 		}
 
 		[Fact]
-		public void DiscardReplenishesToken()
+		public void DiscardReplenishesInformationToken()
 		{
 			var player = playerBuilder.Build();
 
 			player.Discard(cardsInHand[0]);
 
-			player.Table.Tokens.Amount.Should().Be(2);
+			player.Table.InformationTokens.Amount.Should().Be(2);
 		}
 	}
 }

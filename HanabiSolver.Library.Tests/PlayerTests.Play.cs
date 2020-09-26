@@ -72,13 +72,13 @@ namespace HanabiSolver.Library.Tests
 				.SkipLast(1)
 				.Select(n => new Card(suite, n));
 
-			playerBuilder.TableBuilder.TokensBuilder = () => new Tokens(3, 0);
+			playerBuilder.TableBuilder.InformationTokensBuilder = () => new Tokens(3, 0);
 			playerBuilder.TableBuilder.PlayedCardsBuilder[suite] = () => new Pile(cardsPlayed);
 			var player = playerBuilder.Build();
 
 			player.Play(cardToPlay);
 
-			player.Table.Tokens.Amount.Should().Be(1);
+			player.Table.InformationTokens.Amount.Should().Be(1);
 		}
 	}
 }

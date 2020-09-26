@@ -30,7 +30,7 @@ namespace HanabiSolver.Library.Game
 			var newCard = Table.Deck.Draw();
 			cards.Insert(0, newCard);
 
-			Table.Tokens.Replenish();
+			Table.InformationTokens.Replenish();
 		}
 
 		public void Play(Card card)
@@ -41,9 +41,7 @@ namespace HanabiSolver.Library.Game
 				pile.Add(card);
 
 				if (card.Number == Number.Five)
-				{
-					Table.Tokens.Replenish();
-				}
+					Table.InformationTokens.Replenish();
 			}
 			else
 			{

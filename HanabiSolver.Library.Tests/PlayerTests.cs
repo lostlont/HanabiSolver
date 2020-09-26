@@ -29,7 +29,7 @@ namespace HanabiSolver.Library.Tests
 			var tableBuilder = new TableBuilder
 			{
 				DeckBuilder = () => new Deck(cardsInDeck),
-				TokensBuilder = () => new Tokens(3, 1),
+				InformationTokensBuilder = () => new Tokens(3, 1),
 			};
 
 			playerBuilder = new PlayerBuilder(cardsInHand, tableBuilder);

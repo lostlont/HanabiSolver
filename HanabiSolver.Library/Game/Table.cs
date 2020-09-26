@@ -7,15 +7,15 @@ namespace HanabiSolver.Library.Game
 	{
 		public Deck Deck { get; }
 		public Pile DiscardPile { get; }
-		public Tokens Tokens { get; }
+		public Tokens InformationTokens { get; }
 		public Tokens FuseTokens { get; }
 		public Dictionary<Suite, Pile> PlayedCards { get; }
 
-		public Table(Deck deck, Pile discardPile, Tokens tokens, Tokens fuseTokens, Dictionary<Suite, Pile> playedCards)
+		public Table(Deck deck, Pile discardPile, Tokens informationTokens, Tokens fuseTokens, Dictionary<Suite, Pile> playedCards)
 		{
 			Deck = deck;
 			DiscardPile = discardPile;
-			Tokens = tokens;
+			InformationTokens = informationTokens;
 			FuseTokens = fuseTokens;
 			PlayedCards = playedCards;
 		}
