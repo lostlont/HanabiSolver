@@ -21,10 +21,7 @@ namespace HanabiSolver.Library.Game
 
 		public void Discard(Card card)
 		{
-			var removed = cards.Remove(card);
-			if (!removed)
-				throw new InvalidOperationException();
-
+			RemoveCard(card);
 			Table.DiscardPile.Add(card);
 
 			var newCard = Table.Deck.Draw();
@@ -35,6 +32,8 @@ namespace HanabiSolver.Library.Game
 
 		public void Play(Card card)
 		{
+			RemoveCard(card);
+
 			var pile = Table.PlayedCards[card.Suite];
 			if (CanPlay(card, pile))
 			{
@@ -48,6 +47,16 @@ namespace HanabiSolver.Library.Game
 				Table.FuseTokens.Replenish();
 				Table.DiscardPile.Add(card);
 			}
+
+			var newCard = Table.Deck.Draw();
+			cards.Insert(0, newCard);
+		}
+
+		private void RemoveCard(Card card)
+		{
+			var removed = cards.Remove(card);
+			if (!removed)
+				throw new InvalidOperationException();
 		}
 
 		private bool CanPlay(Card card, Pile pile)

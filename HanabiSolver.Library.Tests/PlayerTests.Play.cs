@@ -52,6 +52,7 @@ namespace HanabiSolver.Library.Tests
 				.ExistingAsEnumerable()
 				.Select(n => new Card(suite, n));
 
+			playerBuilder.Cards = cardToPlay.AsEnumerable();
 			playerBuilder.TableBuilder.PlayedCardsBuilder[suite] = () => new Pile(cardsPlayed);
 			var player = playerBuilder.Build();
 
@@ -66,19 +67,48 @@ namespace HanabiSolver.Library.Tests
 		public void PlayFiveReplenishesInformationToken()
 		{
 			const Suite suite = Suite.Blue;
-			var cardToPlay = new Card(suite, Number.Five);
 			var cardsPlayed = EnumUtils
 				.Values<Number>()
 				.SkipLast(1)
 				.Select(n => new Card(suite, n));
 
+			playerBuilder.Cards = new Card(suite, Number.Five).AsEnumerable();
 			playerBuilder.TableBuilder.InformationTokensBuilder = () => new Tokens(3, 0);
 			playerBuilder.TableBuilder.PlayedCardsBuilder[suite] = () => new Pile(cardsPlayed);
 			var player = playerBuilder.Build();
 
-			player.Play(cardToPlay);
+			player.Play(player.Cards.Single());
 
 			player.Table.InformationTokens.Amount.Should().Be(1);
+		}
+
+		[Fact]
+		public void PlayDrawsFromDeck()
+		{
+			var player = playerBuilder.Build();
+
+			player.Play(player.Cards.First());
+
+			var expectedDeck = new Deck(cardsInDeck);
+			expectedDeck.Draw();
+
+			player.Table.Deck.Cards.Should().Equal(expectedDeck.Cards);
+		}
+
+		[Theory]
+		[InlineData(0)]
+		[InlineData(2)]
+		public void PlayMovesFromTopOfDeckToBeginningOfHand(int cardIndexToPlay)
+		{
+			var player = playerBuilder.Build();
+			var newCard = player.Table.Deck.Top;
+
+			player.Play(cardsInHand[cardIndexToPlay]);
+
+			var newCards = newCard.AsEnumerable();
+			var oldCards = cardsInHand.ExceptAt(cardIndexToPlay);
+			var expectedCards = Enumerable.Concat(newCards, oldCards);
+			player.Cards.Should().Equal(expectedCards);
 		}
 	}
 }
