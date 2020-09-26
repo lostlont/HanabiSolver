@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace HanabiSolver.Library.Tests
+namespace HanabiSolver.Library.Tests.Game
 {
 	public class PileTests
 	{

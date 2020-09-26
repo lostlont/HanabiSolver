@@ -2,7 +2,7 @@
 using HanabiSolver.Library.Tests.Builders;
 using System.Collections.Generic;
 
-namespace HanabiSolver.Library.Tests
+namespace HanabiSolver.Library.Tests.Game
 {
 	public partial class PlayerTests
 	{

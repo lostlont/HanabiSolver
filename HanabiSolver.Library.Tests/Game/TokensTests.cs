@@ -3,7 +3,7 @@ using HanabiSolver.Library.Game;
 using System;
 using Xunit;
 
-namespace HanabiSolver.Library.Tests
+namespace HanabiSolver.Library.Tests.Game
 {
 	public class TokensTests
 	{

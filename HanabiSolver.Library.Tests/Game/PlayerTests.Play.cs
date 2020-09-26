@@ -5,7 +5,7 @@ using HanabiSolver.Library.Utils;
 using System.Linq;
 using Xunit;
 
-namespace HanabiSolver.Library.Tests
+namespace HanabiSolver.Library.Tests.Game
 {
 	public partial class PlayerTests
 	{
