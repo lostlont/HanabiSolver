@@ -39,6 +39,11 @@ namespace HanabiSolver.Library.Game
 			if (CanPlay(card, pile))
 			{
 				pile.Add(card);
+
+				if (card.Number == Number.Five)
+				{
+					Table.Tokens.Replenish();
+				}
 			}
 			else
 			{

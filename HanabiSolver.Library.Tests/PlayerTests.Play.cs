@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using HanabiSolver.Library.Extensions;
 using HanabiSolver.Library.Game;
+using HanabiSolver.Library.Utils;
 using System.Linq;
 using Xunit;
 
@@ -42,6 +43,7 @@ namespace HanabiSolver.Library.Tests
 		[Theory]
 		[InlineData(Number.One, Number.One)]
 		[InlineData(Number.Two, null)]
+		[InlineData(Number.Five, Number.Three)]
 		public void PlayWrongNumberGivesFuseTokenAndDiscardsCard(Number playedNumber, Number? lastNumber)
 		{
 			const Suite suite = Suite.Blue;
@@ -58,6 +60,25 @@ namespace HanabiSolver.Library.Tests
 			player.Table.PlayedCards[suite].Cards.Should().BeEquivalentTo(cardsPlayed);
 			player.Table.FuseTokens.Amount.Should().Be(1);
 			player.Table.DiscardPile.Top.Should().Be(cardToPlay);
+		}
+
+		[Fact]
+		public void PlayFiveReplenishesInformationToken()
+		{
+			const Suite suite = Suite.Blue;
+			var cardToPlay = new Card(suite, Number.Five);
+			var cardsPlayed = EnumUtils
+				.Values<Number>()
+				.SkipLast(1)
+				.Select(n => new Card(suite, n));
+
+			playerBuilder.TableBuilder.TokensBuilder = () => new Tokens(3, 0);
+			playerBuilder.TableBuilder.PlayedCardsBuilder[suite] = () => new Pile(cardsPlayed);
+			var player = playerBuilder.Build();
+
+			player.Play(cardToPlay);
+
+			player.Table.Tokens.Amount.Should().Be(1);
 		}
 	}
 }
