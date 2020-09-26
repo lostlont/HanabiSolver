@@ -26,17 +26,17 @@ namespace HanabiSolver.Library.Tests.Game
 				new Card(Suite.Blue, Number.Three),
 			};
 
-			var tableBuilder = new TableBuilder
+			playerBuilder = new PlayerBuilder
 			{
-				DeckBuilder = () => new Deck(cardsInDeck),
-				InformationTokensBuilder = () => new Tokens(3, 1),
+				CardsBuilder = () => cardsInHand,
+				TableBuilder = new TableBuilder
+				{
+					DeckBuilder = () => new Deck(cardsInDeck),
+					InformationTokensBuilder = () => new Tokens(3, 1),
+				},
 			};
-
-			playerBuilder = new PlayerBuilder(cardsInHand, tableBuilder);
 		}
 
-		// TODO Test tokens.
-		// TODO Test playing cards.
 		// TODO Test giving information.
 	}
 }

@@ -15,7 +15,7 @@ namespace HanabiSolver.Library.Tests.Game
 			const Suite suite = Suite.Blue;
 			var cardToPlay = new Card(suite, Number.One);
 
-			playerBuilder.Cards = cardToPlay.AsEnumerable();
+			playerBuilder.CardsBuilder = () => cardToPlay.AsEnumerable();
 			var player = playerBuilder.Build();
 
 			player.Play(cardToPlay);
@@ -31,7 +31,7 @@ namespace HanabiSolver.Library.Tests.Game
 			var cardToPlay = new Card(suite, Number.Two);
 
 			playerBuilder.TableBuilder.PlayedCardsBuilder[suite] = () => new Pile(cardsPlayed);
-			playerBuilder.Cards = cardToPlay.AsEnumerable();
+			playerBuilder.CardsBuilder = () => cardToPlay.AsEnumerable();
 			var player = playerBuilder.Build();
 
 			player.Play(cardToPlay);
@@ -52,7 +52,7 @@ namespace HanabiSolver.Library.Tests.Game
 				.ExistingAsEnumerable()
 				.Select(n => new Card(suite, n));
 
-			playerBuilder.Cards = cardToPlay.AsEnumerable();
+			playerBuilder.CardsBuilder = () => cardToPlay.AsEnumerable();
 			playerBuilder.TableBuilder.PlayedCardsBuilder[suite] = () => new Pile(cardsPlayed);
 			var player = playerBuilder.Build();
 
@@ -72,7 +72,7 @@ namespace HanabiSolver.Library.Tests.Game
 				.SkipLast(1)
 				.Select(n => new Card(suite, n));
 
-			playerBuilder.Cards = new Card(suite, Number.Five).AsEnumerable();
+			playerBuilder.CardsBuilder = () => new Card(suite, Number.Five).AsEnumerable();
 			playerBuilder.TableBuilder.InformationTokensBuilder = () => new Tokens(3, 0);
 			playerBuilder.TableBuilder.PlayedCardsBuilder[suite] = () => new Pile(cardsPlayed);
 			var player = playerBuilder.Build();
