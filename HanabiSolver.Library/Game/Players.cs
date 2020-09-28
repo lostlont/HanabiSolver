@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,10 +10,17 @@ namespace HanabiSolver.Library.Game
 		private readonly List<Player> players;
 
 		public Players(IEnumerable<Player> players)
+			: this(players, players.First())
 		{
-			this.players = players.ToList();
 		}
 
+		public Players(IEnumerable<Player> players, Player currentPlayer)
+		{
+			this.players = players.ToList();
+			CurrentPlayer = currentPlayer;
+		}
+
+		public Player CurrentPlayer { get; private set; }
 		public Player this[int index] => players[index];
 		public int Count => players.Count;
 
@@ -27,6 +35,11 @@ namespace HanabiSolver.Library.Game
 				.SkipWhile(p => p != player)
 				.Skip(1)
 				.First();
+		}
+
+		public void EndTurn()
+		{
+			CurrentPlayer = Next(CurrentPlayer);
 		}
 	}
 }

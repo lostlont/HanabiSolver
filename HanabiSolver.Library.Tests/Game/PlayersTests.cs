@@ -1,14 +1,13 @@
 ﻿using FluentAssertions;
 using HanabiSolver.Library.Game;
 using HanabiSolver.Library.Tests.Builders;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
 namespace HanabiSolver.Library.Tests.Game
 {
-	public class PlayersTests
+	public partial class PlayersTests
 	{
 		private readonly IReadOnlyList<Player> playerList;
 
@@ -31,34 +30,20 @@ namespace HanabiSolver.Library.Tests.Game
 			players.Should().Equal(playerList);
 		}
 
-		[Theory]
-		[InlineData(0)]
-		[InlineData(1)]
-		public void NextReturnsNextInLine(int index)
+		[Fact]
+		public void ConstructorSetsCurrentPlayerToFirstPlayer()
 		{
 			var players = new Players(playerList);
 
-			players.Next(playerList[index]).Should().Be(playerList[index + 1]);
+			players.CurrentPlayer.Should().Be(playerList.First());
 		}
 
 		[Fact]
-		public void NextReturnsFirstForLast()
+		public void ConstructorSetsCurrentPlayerToGivenPlayer()
 		{
-			var players = new Players(playerList);
+			var players = new Players(playerList, playerList[1]);
 
-			players.Next(playerList.Last()).Should().Be(playerList.First());
-		}
-
-		[Fact]
-		public void NextThrowsForInvalidPlayer()
-		{
-			var players = new Players(playerList);
-			var invalidPlayer = new PlayerBuilder().Build();
-
-			players
-				.Invoking(p => p.Next(invalidPlayer))
-				.Should()
-				.Throw<InvalidOperationException>();
+			players.CurrentPlayer.Should().Be(playerList[1]);
 		}
 	}
 }
