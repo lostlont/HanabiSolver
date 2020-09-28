@@ -122,6 +122,5 @@ namespace HanabiSolver.Library.Tests.Game
 		}
 
 		// TODO Test Discard and play should get rid of information
-		// TODO Test CanGiveInformation
 	}
 }

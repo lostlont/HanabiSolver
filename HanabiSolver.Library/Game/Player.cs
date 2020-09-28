@@ -61,6 +61,16 @@ namespace HanabiSolver.Library.Game
 				information.IsNumberKnown = true;
 		}
 
+		public bool CanGiveInformation(Player otherPlayer, Suite suite)
+		{
+			return otherPlayer.Cards.Any(c => c.Suite == suite);
+		}
+
+		public bool CanGiveInformation(Player otherPlayer, Number number)
+		{
+			return otherPlayer.Cards.Any(c => c.Number == number);
+		}
+
 		public void Play(Card card)
 		{
 			RemoveCard(card);
