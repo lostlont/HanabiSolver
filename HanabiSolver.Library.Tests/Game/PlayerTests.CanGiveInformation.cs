@@ -24,6 +24,9 @@ namespace HanabiSolver.Library.Tests.Game
 			player.CanGiveInformation(otherPlayer, Suite.Red).Should().BeFalse();
 		}
 
+		// TODO CanGiveInformationForPartiallyInformedSuite
+		// TODO CanNotGiveInformationForFullyInformedSuite
+
 		[Fact]
 		public void CanGiveInformationForExistingNumber()
 		{
@@ -41,5 +44,8 @@ namespace HanabiSolver.Library.Tests.Game
 
 			player.CanGiveInformation(otherPlayer, Number.Five).Should().BeFalse();
 		}
+
+		// TODO CanGiveInformationForPartiallyInformedNumber
+		// TODO CanNotGiveInformationForFullyInformedNumber
 	}
 }

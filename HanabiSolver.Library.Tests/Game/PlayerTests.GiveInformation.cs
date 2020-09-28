@@ -120,7 +120,5 @@ namespace HanabiSolver.Library.Tests.Game
 
 			otherPlayer.Information[card].IsNumberKnown.Should().BeTrue();
 		}
-
-		// TODO Test CanGiveInformation should return false for suite/number which already shows full information
 	}
 }
