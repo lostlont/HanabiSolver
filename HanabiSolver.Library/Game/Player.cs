@@ -15,10 +15,20 @@ namespace HanabiSolver.Library.Game
 		public Table Table { get; }
 
 		public Player(IEnumerable<Card> cards, Table table)
+			: this(cards, table, CreateInformation(cards))
+		{
+		}
+
+		public Player(IEnumerable<Card> cards, Table table, IReadOnlyDictionary<Card, Information> information)
 		{
 			this.cards = cards.ToList();
-			information = this.cards.ToDictionary(c => c, _ => new Information());
+			this.information = information.ToDictionary(e => e.Key, e => e.Value);
 			Table = table;
+		}
+
+		private static Dictionary<Card, Information> CreateInformation(IEnumerable<Card> cards)
+		{
+			return cards.ToDictionary(c => c, _ => new Information());
 		}
 
 		public void Discard(Card card)
