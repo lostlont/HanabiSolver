@@ -46,7 +46,7 @@ namespace HanabiSolver.Library.Game
 			if (Table.InformationTokens.Amount <= 0)
 				throw new InvalidOperationException();
 
-			var informedCards = otherPlayer.cards.Where(c => c.Suite == suite);
+			var informedCards = otherPlayer.InformationAffectedCards(suite);
 
 			if (informedCards.None())
 				throw new InvalidOperationException();
@@ -61,7 +61,7 @@ namespace HanabiSolver.Library.Game
 			if (Table.InformationTokens.Amount <= 0)
 				throw new InvalidOperationException();
 
-			var informedCards = otherPlayer.cards.Where(c => c.Number == number);
+			var informedCards = otherPlayer.InformationAffectedCards(number);
 
 			if (informedCards.None())
 				throw new InvalidOperationException();
@@ -73,12 +73,26 @@ namespace HanabiSolver.Library.Game
 
 		public bool CanGiveInformation(Player otherPlayer, Suite suite)
 		{
-			return otherPlayer.Cards.Any(c => c.Suite == suite);
+			return otherPlayer.InformationAffectedCards(suite).Any();
 		}
 
 		public bool CanGiveInformation(Player otherPlayer, Number number)
 		{
-			return otherPlayer.Cards.Any(c => c.Number == number);
+			return otherPlayer.InformationAffectedCards(number).Any();
+		}
+
+		public IEnumerable<Card> InformationAffectedCards(Suite suite)
+		{
+			return Cards
+				.Where(c => c.Suite == suite)
+				.Where(c => Information[c].IsSuiteKnown == false);
+		}
+
+		public IEnumerable<Card> InformationAffectedCards(Number number)
+		{
+			return Cards
+				.Where(c => c.Number == number)
+				.Where(c => Information[c].IsNumberKnown == false);
 		}
 
 		public void Play(Card card)

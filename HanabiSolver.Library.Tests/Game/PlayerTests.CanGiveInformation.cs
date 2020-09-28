@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using HanabiSolver.Library.Game;
+using System.Collections.Generic;
 using Xunit;
 
 namespace HanabiSolver.Library.Tests.Game
@@ -24,8 +25,44 @@ namespace HanabiSolver.Library.Tests.Game
 			player.CanGiveInformation(otherPlayer, Suite.Red).Should().BeFalse();
 		}
 
-		// TODO CanGiveInformationForPartiallyInformedSuite
-		// TODO CanNotGiveInformationForFullyInformedSuite
+		[Fact]
+		public void CanGiveInformationForPartiallyInformedSuite()
+		{
+			var player = playerBuilder.Build();
+
+			var otherPlayerCards = new List<Card>
+			{
+				new Card(Suite.White, Number.One),
+				new Card(Suite.White, Number.Two),
+			};
+			var otherPlayerInformation = new Dictionary<Card, Information>
+			{
+				[otherPlayerCards[0]] = new Information { IsSuiteKnown = true },
+				[otherPlayerCards[1]] = new Information { IsSuiteKnown = false },
+			};
+			otherPlayerBuilder.CardsBuilder = () => otherPlayerCards;
+			otherPlayerBuilder.InformationBuilder = card => otherPlayerInformation[card];
+			var otherPlayer = otherPlayerBuilder.Build();
+
+			player.CanGiveInformation(otherPlayer, Suite.White).Should().BeTrue();
+		}
+
+		[Fact]
+		public void CanNotGiveInformationForFullyInformedSuite()
+		{
+			var player = playerBuilder.Build();
+
+			var otherPlayerCards = new List<Card>
+			{
+				new Card(Suite.White, Number.One),
+				new Card(Suite.White, Number.Two),
+			};
+			otherPlayerBuilder.CardsBuilder = () => otherPlayerCards;
+			otherPlayerBuilder.InformationBuilder = card => new Information { IsSuiteKnown = true };
+			var otherPlayer = otherPlayerBuilder.Build();
+
+			player.CanGiveInformation(otherPlayer, Suite.White).Should().BeFalse();
+		}
 
 		[Fact]
 		public void CanGiveInformationForExistingNumber()
@@ -45,7 +82,43 @@ namespace HanabiSolver.Library.Tests.Game
 			player.CanGiveInformation(otherPlayer, Number.Five).Should().BeFalse();
 		}
 
-		// TODO CanGiveInformationForPartiallyInformedNumber
-		// TODO CanNotGiveInformationForFullyInformedNumber
+		[Fact]
+		public void CanGiveInformationForPartiallyInformedNumber()
+		{
+			var player = playerBuilder.Build();
+
+			var otherPlayerCards = new List<Card>
+			{
+				new Card(Suite.White, Number.One),
+				new Card(Suite.Yellow, Number.One),
+			};
+			var otherPlayerInformation = new Dictionary<Card, Information>
+			{
+				[otherPlayerCards[0]] = new Information { IsSuiteKnown = true },
+				[otherPlayerCards[1]] = new Information { IsSuiteKnown = false },
+			};
+			otherPlayerBuilder.CardsBuilder = () => otherPlayerCards;
+			otherPlayerBuilder.InformationBuilder = card => otherPlayerInformation[card];
+			var otherPlayer = otherPlayerBuilder.Build();
+
+			player.CanGiveInformation(otherPlayer, Number.One).Should().BeTrue();
+		}
+
+		[Fact]
+		public void CanNotGiveInformationForFullyInformedNumber()
+		{
+			var player = playerBuilder.Build();
+
+			var otherPlayerCards = new List<Card>
+			{
+				new Card(Suite.White, Number.One),
+				new Card(Suite.Yellow, Number.One),
+			};
+			otherPlayerBuilder.CardsBuilder = () => otherPlayerCards;
+			otherPlayerBuilder.InformationBuilder = card => new Information { IsNumberKnown = true };
+			var otherPlayer = otherPlayerBuilder.Build();
+
+			player.CanGiveInformation(otherPlayer, Number.One).Should().BeFalse();
+		}
 	}
 }
