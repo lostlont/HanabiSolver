@@ -19,5 +19,14 @@ namespace HanabiSolver.Library.Game
 		public IEnumerator<Player> GetEnumerator() => players.GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => players.GetEnumerator();
+
+		public Player Next(Player player)
+		{
+			return players
+				.Append(players.First())
+				.SkipWhile(p => p != player)
+				.Skip(1)
+				.First();
+		}
 	}
 }
