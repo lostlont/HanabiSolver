@@ -15,7 +15,7 @@ namespace HanabiSolver.Library.Tests.Extensions
 			var enumerable = character.AsEnumerable();
 
 			var expectedValues = new List<char> { 'c' };
-			enumerable.Should().BeEquivalentTo(expectedValues);
+			enumerable.Should().Equal(expectedValues);
 		}
 	}
 }

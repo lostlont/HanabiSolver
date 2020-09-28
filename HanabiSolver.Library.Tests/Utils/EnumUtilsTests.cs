@@ -25,7 +25,7 @@ namespace HanabiSolver.Library.Tests.Utils
 				Test.B,
 				Test.C,
 			};
-			values.Should().BeEquivalentTo(expectedValues);
+			values.Should().Equal(expectedValues);
 		}
 	}
 }

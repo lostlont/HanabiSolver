@@ -25,7 +25,7 @@ namespace HanabiSolver.Library.Tests.Game
 		{
 			var pile = new Pile(cards);
 
-			pile.Cards.Should().BeEquivalentTo(cards);
+			pile.Cards.Should().Equal(cards);
 		}
 
 		[Fact]

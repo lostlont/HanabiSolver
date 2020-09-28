@@ -37,7 +37,7 @@ namespace HanabiSolver.Library.Tests.Game
 			player.Play(cardToPlay);
 
 			var expectedCards = cardsPlayed.Append(cardToPlay);
-			player.Table.PlayedCards[suite].Cards.Should().BeEquivalentTo(expectedCards);
+			player.Table.PlayedCards[suite].Cards.Should().Equal(expectedCards);
 		}
 
 		[Theory]
@@ -50,7 +50,8 @@ namespace HanabiSolver.Library.Tests.Game
 			var cardToPlay = new Card(suite, playedNumber);
 			var cardsPlayed = lastNumber
 				.ExistingAsEnumerable()
-				.Select(n => new Card(suite, n));
+				.Select(n => new Card(suite, n))
+				.ToList();
 
 			playerBuilder.CardsBuilder = () => cardToPlay.AsEnumerable();
 			playerBuilder.TableBuilder.PlayedCardsBuilder[suite] = () => new Pile(cardsPlayed);
@@ -58,7 +59,7 @@ namespace HanabiSolver.Library.Tests.Game
 
 			player.Play(cardToPlay);
 
-			player.Table.PlayedCards[suite].Cards.Should().BeEquivalentTo(cardsPlayed);
+			player.Table.PlayedCards[suite].Cards.Should().Equal(cardsPlayed);
 			player.Table.FuseTokens.Amount.Should().Be(1);
 			player.Table.DiscardPile.Top.Should().Be(cardToPlay);
 		}

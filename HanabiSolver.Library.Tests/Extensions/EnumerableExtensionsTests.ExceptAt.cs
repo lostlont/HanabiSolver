@@ -15,7 +15,7 @@ namespace HanabiSolver.Library.Tests.Extensions
 			var values = characters.ExceptAt(1);
 
 			var expectedValues = new List<char> { 'a', 'c' };
-			values.Should().BeEquivalentTo(expectedValues);
+			values.Should().Equal(expectedValues);
 		}
 	}
 }
