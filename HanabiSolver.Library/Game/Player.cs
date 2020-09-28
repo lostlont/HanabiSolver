@@ -8,15 +8,16 @@ namespace HanabiSolver.Library.Game
 	public class Player
 	{
 		private readonly List<Card> cards;
+		private readonly Dictionary<Card, Information> information = new Dictionary<Card, Information>();
 
 		public IReadOnlyCollection<Card> Cards => cards;
-		public IReadOnlyDictionary<Card, Information> Information { get; }
+		public IReadOnlyDictionary<Card, Information> Information => information;
 		public Table Table { get; }
 
 		public Player(IEnumerable<Card> cards, Table table)
 		{
 			this.cards = cards.ToList();
-			Information = this.cards.ToDictionary(c => c, _ => new Information());
+			information = this.cards.ToDictionary(c => c, _ => new Information());
 			Table = table;
 		}
 
@@ -25,8 +26,7 @@ namespace HanabiSolver.Library.Game
 			RemoveCard(card);
 			Table.DiscardPile.Add(card);
 
-			var newCard = Table.Deck.Draw();
-			cards.Insert(0, newCard);
+			DrawCard();
 
 			Table.InformationTokens.Replenish();
 		}
@@ -89,8 +89,15 @@ namespace HanabiSolver.Library.Game
 				Table.DiscardPile.Add(card);
 			}
 
+			DrawCard();
+		}
+
+		private void DrawCard()
+		{
 			var newCard = Table.Deck.Draw();
 			cards.Insert(0, newCard);
+
+			information[newCard] = new Information();
 		}
 
 		private void RemoveCard(Card card)
@@ -98,6 +105,8 @@ namespace HanabiSolver.Library.Game
 			var removed = cards.Remove(card);
 			if (!removed)
 				throw new InvalidOperationException();
+
+			information.Remove(card);
 		}
 
 		private bool CanPlay(Card card, Pile pile)

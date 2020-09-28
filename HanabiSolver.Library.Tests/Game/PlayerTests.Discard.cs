@@ -69,5 +69,28 @@ namespace HanabiSolver.Library.Tests.Game
 
 			player.Table.InformationTokens.Amount.Should().Be(2);
 		}
+
+		[Fact]
+		public void DiscardGetsRidOfInformation()
+		{
+			var player = playerBuilder.Build();
+			var cardToDiscard = cardsInHand.First();
+
+			player.Discard(cardToDiscard);
+
+			player.Information.Keys.Should().NotContain(cardToDiscard);
+		}
+
+		[Fact]
+		public void DiscardAddsEmptyInformationForDrawnCard()
+		{
+			var player = playerBuilder.Build();
+			var cardToDiscard = cardsInHand.First();
+			var drawnCard = player.Table.Deck.Top;
+
+			player.Discard(cardToDiscard);
+
+			player.Information.Keys.Should().Contain(drawnCard);
+		}
 	}
 }

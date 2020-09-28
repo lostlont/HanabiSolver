@@ -111,5 +111,28 @@ namespace HanabiSolver.Library.Tests.Game
 			var expectedCards = Enumerable.Concat(newCards, oldCards);
 			player.Cards.Should().Equal(expectedCards);
 		}
+
+		[Fact]
+		public void PlayGetsRidOfInformation()
+		{
+			var player = playerBuilder.Build();
+			var cardToPlay = cardsInHand.First();
+
+			player.Play(cardToPlay);
+
+			player.Information.Keys.Should().NotContain(cardToPlay);
+		}
+
+		[Fact]
+		public void PlayAddsEmptyInformationForDrawnCard()
+		{
+			var player = playerBuilder.Build();
+			var cardToPlay = cardsInHand.First();
+			var drawnCard = player.Table.Deck.Top;
+
+			player.Play(cardToPlay);
+
+			player.Information.Keys.Should().Contain(drawnCard);
+		}
 	}
 }
