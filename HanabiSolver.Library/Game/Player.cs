@@ -73,12 +73,14 @@ namespace HanabiSolver.Library.Game
 
 		public bool CanGiveInformation(Player otherPlayer, Suite suite)
 		{
-			return otherPlayer.InformationAffectedCards(suite).Any();
+			return (Table.InformationTokens.Amount > 0)
+				&& otherPlayer.InformationAffectedCards(suite).Any();
 		}
 
 		public bool CanGiveInformation(Player otherPlayer, Number number)
 		{
-			return otherPlayer.InformationAffectedCards(number).Any();
+			return (Table.InformationTokens.Amount > 0)
+				&& otherPlayer.InformationAffectedCards(number).Any();
 		}
 
 		public IEnumerable<Card> InformationAffectedCards(Suite suite)

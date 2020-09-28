@@ -65,6 +65,16 @@ namespace HanabiSolver.Library.Tests.Game
 		}
 
 		[Fact]
+		public void CanNotGiveInformationForSuiteWithNoInformationTokens()
+		{
+			playerBuilder.TableBuilder.InformationTokensBuilder = () => new Tokens(3, 0);
+			var player = playerBuilder.Build();
+			var otherPlayer = otherPlayerBuilder.Build();
+
+			player.CanGiveInformation(otherPlayer, Suite.White).Should().BeFalse();
+		}
+
+		[Fact]
 		public void CanGiveInformationForExistingNumber()
 		{
 			var player = playerBuilder.Build();
@@ -116,6 +126,16 @@ namespace HanabiSolver.Library.Tests.Game
 			};
 			otherPlayerBuilder.CardsBuilder = () => otherPlayerCards;
 			otherPlayerBuilder.InformationBuilder = card => new Information { IsNumberKnown = true };
+			var otherPlayer = otherPlayerBuilder.Build();
+
+			player.CanGiveInformation(otherPlayer, Number.One).Should().BeFalse();
+		}
+
+		[Fact]
+		public void CanNotGiveInformationForNumberWithNoInformationTokens()
+		{
+			playerBuilder.TableBuilder.InformationTokensBuilder = () => new Tokens(3, 0);
+			var player = playerBuilder.Build();
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player.CanGiveInformation(otherPlayer, Number.One).Should().BeFalse();
