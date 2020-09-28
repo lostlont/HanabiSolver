@@ -36,7 +36,5 @@ namespace HanabiSolver.Library.Tests.Game
 				},
 			};
 		}
-
-		// TODO Test giving information.
 	}
 }
