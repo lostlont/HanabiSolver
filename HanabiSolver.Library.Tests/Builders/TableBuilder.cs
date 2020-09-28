@@ -1,5 +1,4 @@
 ﻿using HanabiSolver.Library.Game;
-using HanabiSolver.Library.Interfaces;
 using HanabiSolver.Library.Utils;
 using System;
 using System.Collections.Generic;
@@ -17,7 +16,7 @@ namespace HanabiSolver.Library.Tests.Builders
 		public Func<Tokens> FuseTokensBuilder { get; set; } = () => new Tokens(2, 0);
 		public Dictionary<Suite, Func<Pile>> PlayedCardsBuilder { get; } = EnumUtils.Values<Suite>().ToDictionary(suite => suite, suite => DefaultPileBuilder);
 
-		public ITable Build()
+		public Table Build()
 		{
 			var deck = DeckBuilder();
 			var discardPile = DiscardPileBuilder();

@@ -1,9 +1,8 @@
-﻿using HanabiSolver.Library.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace HanabiSolver.Library.Game
 {
-	public class Table : ITable
+	public class Table
 	{
 		public Deck Deck { get; }
 		public Pile DiscardPile { get; }
