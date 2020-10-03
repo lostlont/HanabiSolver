@@ -2,7 +2,15 @@
 
 namespace HanabiSolver.Library.Game
 {
-	public class Tokens
+	public interface ITokens
+	{
+		int Amount { get; }
+
+		void Use();
+		void Replenish();
+	}
+
+	public class Tokens : ITokens
 	{
 		public int MaxAmount { get; }
 

@@ -135,7 +135,7 @@ namespace HanabiSolver.Library.Game
 			information.Remove(card);
 		}
 
-		private bool CanPlay(Card card, Pile pile)
+		private bool CanPlay(Card card, IPile pile)
 		{
 			var lastNumber = pile.Cards.LastOrDefault()?.Number;
 			var expectedNextNumber = lastNumber?.Next() ?? Number.One;

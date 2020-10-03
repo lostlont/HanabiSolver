@@ -3,7 +3,15 @@ using System.Linq;
 
 namespace HanabiSolver.Library.Game
 {
-	public partial class Deck
+	public interface IDeck
+	{
+		IReadOnlyCollection<Card> Cards { get; }
+		Card Top { get; }
+
+		Card Draw();
+	}
+
+	public partial class Deck : IDeck
 	{
 		private readonly Queue<Card> cards;
 

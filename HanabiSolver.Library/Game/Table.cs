@@ -4,13 +4,14 @@ namespace HanabiSolver.Library.Game
 {
 	public class Table
 	{
-		public Deck Deck { get; }
-		public Pile DiscardPile { get; }
-		public Tokens InformationTokens { get; }
-		public Tokens FuseTokens { get; }
-		public Dictionary<Suite, Pile> PlayedCards { get; }
+		public IDeck Deck { get; }
+		public IPile DiscardPile { get; }
+		public ITokens InformationTokens { get; }
+		public ITokens FuseTokens { get; }
+		public Dictionary<Suite, IPile> PlayedCards { get; }
 
-		public Table(Deck deck, Pile discardPile, Tokens informationTokens, Tokens fuseTokens, Dictionary<Suite, Pile> playedCards)
+		// TODO Switch to I(ReadOnly)Dictionary?
+		public Table(IDeck deck, IPile discardPile, ITokens informationTokens, ITokens fuseTokens, Dictionary<Suite, IPile> playedCards)
 		{
 			Deck = deck;
 			DiscardPile = discardPile;

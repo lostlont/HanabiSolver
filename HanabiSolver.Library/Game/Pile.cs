@@ -3,7 +3,15 @@ using System.Linq;
 
 namespace HanabiSolver.Library.Game
 {
-	public class Pile
+	public interface IPile
+	{
+		IReadOnlyCollection<Card> Cards { get; }
+		Card? Top { get; }
+
+		void Add(Card card);
+	}
+
+	public class Pile : IPile
 	{
 		private readonly List<Card> cards;
 
