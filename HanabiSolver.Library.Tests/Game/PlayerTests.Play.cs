@@ -128,7 +128,7 @@ namespace HanabiSolver.Library.Tests.Game
 		public void PlayGetsRidOfInformation()
 		{
 			var player = playerBuilder.Build();
-			var cardToPlay = cardsInHand.First();
+			var cardToPlay = player.Cards.First();
 
 			player.Play(cardToPlay);
 

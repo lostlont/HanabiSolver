@@ -7,19 +7,11 @@ namespace HanabiSolver.Library.Tests.Game
 	public partial class PlayerTests
 	{
 		// TODO Remove these.
-		private readonly IReadOnlyList<Card> cardsInHand;
 		private readonly IReadOnlyList<Card> cardsInDeck;
 		private readonly PlayerBuilder playerBuilder;
 
 		public PlayerTests()
 		{
-			cardsInHand = new List<Card>
-			{
-				new Card(Suite.White, Number.Five),
-				new Card(Suite.White, Number.One),
-				new Card(Suite.Red, Number.Three),
-			};
-
 			cardsInDeck = new List<Card>
 			{
 				new Card(Suite.Red, Number.One),
@@ -29,7 +21,6 @@ namespace HanabiSolver.Library.Tests.Game
 
 			playerBuilder = new PlayerBuilder
 			{
-				Cards = cardsInHand,
 				TableBuilder = new TableBuilder
 				{
 					InformationTokensBuilder = () => new Tokens(3, 1),
