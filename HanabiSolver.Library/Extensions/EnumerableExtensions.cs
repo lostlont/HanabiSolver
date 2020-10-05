@@ -11,6 +11,7 @@ namespace HanabiSolver.Library.Extensions
 			return new TResult[] { element };
 		}
 
+		// TODO Is ExistingAsEnumerable still needed?
 		public static IEnumerable<TResult> ExistingAsEnumerable<TResult>(this TResult? element)
 			where TResult : struct
 		{

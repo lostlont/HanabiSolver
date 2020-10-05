@@ -3,7 +3,6 @@ using HanabiSolver.Library.Extensions;
 using HanabiSolver.Library.Game;
 using HanabiSolver.Library.Utils;
 using Moq;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -19,10 +18,9 @@ namespace HanabiSolver.Library.Tests.Game
 
 			playerBuilder.Cards = cardToPlay.AsEnumerable();
 			var pile = new Mock<IPile>();
-			// TODO Use Top in Player.CanPlay and get rid of this!
 			pile
-				.Setup(p => p.Cards)
-				.Returns(new List<Card>());
+				.Setup(p => p.Top)
+				.Returns((Card?)null);
 			playerBuilder.TableBuilder.PlayedCards[suite] = pile.Object;
 			var player = playerBuilder.Build();
 
@@ -39,10 +37,9 @@ namespace HanabiSolver.Library.Tests.Game
 
 			playerBuilder.Cards = cardToPlay.AsEnumerable();
 			var pile = new Mock<IPile>();
-			// TODO Use Top in Player.CanPlay and get rid of this!
 			pile
-				.Setup(p => p.Cards)
-				.Returns(new Card(suite, Number.One).AsEnumerable().ToList());
+				.Setup(p => p.Top)
+				.Returns(new Card(suite, Number.One));
 			playerBuilder.TableBuilder.PlayedCards[suite] = pile.Object;
 			var player = playerBuilder.Build();
 
@@ -60,19 +57,17 @@ namespace HanabiSolver.Library.Tests.Game
 			// TODO Split complex tests!
 			const Suite suite = Suite.Blue;
 			var cardToPlay = new Card(suite, playedNumber);
-			var cardsPlayed = lastNumber
-				.ExistingAsEnumerable()
-				.Select(n => new Card(suite, n))
-				.ToList();
+			var topCardPlayed = lastNumber.HasValue
+				? new Card(suite, lastNumber.Value)
+				: null;
 
 			playerBuilder.Cards = cardToPlay.AsEnumerable();
 			var fuseTokens = new Mock<ITokens>();
 			playerBuilder.TableBuilder.FuseTokens = fuseTokens.Object;
 			var pile = new Mock<IPile>();
-			// TODO Use Top in Player.CanPlay and get rid of this!
 			pile
-				.Setup(p => p.Cards)
-				.Returns(cardsPlayed);
+				.Setup(p => p.Top)
+				.Returns(topCardPlayed);
 			playerBuilder.TableBuilder.PlayedCards[suite] = pile.Object;
 			var discardPile = new Mock<IPile>();
 			playerBuilder.TableBuilder.DiscardPile = discardPile.Object;
@@ -89,20 +84,14 @@ namespace HanabiSolver.Library.Tests.Game
 		public void PlayFiveReplenishesInformationToken()
 		{
 			const Suite suite = Suite.Blue;
-			var cardsPlayed = EnumUtils
-				.Values<Number>()
-				.SkipLast(1)
-				.Select(n => new Card(suite, n))
-				.ToList();
 
 			playerBuilder.Cards = new Card(suite, Number.Five).AsEnumerable();
 			var informationTokens = new Mock<ITokens>();
 			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
 			var pile = new Mock<IPile>();
-			// TODO Use Top in Player.CanPlay and get rid of this!
 			pile
-				.Setup(p => p.Cards)
-				.Returns(cardsPlayed);
+				.Setup(p => p.Top)
+				.Returns(new Card(suite, Number.Four));
 			playerBuilder.TableBuilder.PlayedCards[suite] = pile.Object;
 			var player = playerBuilder.Build();
 

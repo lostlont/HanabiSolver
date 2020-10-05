@@ -54,11 +54,10 @@ namespace HanabiSolver.Library.Tests.Builders
 
 		public static IPile BuildEmptyPile()
 		{
-			// TODO Use Top in Player.CanPlay and get rid of this!
 			var pile = new Mock<IPile>();
 			pile
-				.Setup(p => p.Cards)
-				.Returns(new List<Card>());
+				.Setup(p => p.Top)
+				.Returns((Card?)null);
 
 			return pile.Object;
 		}

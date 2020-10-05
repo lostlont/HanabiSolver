@@ -137,8 +137,7 @@ namespace HanabiSolver.Library.Game
 
 		private bool CanPlay(Card card, IPile pile)
 		{
-			var lastNumber = pile.Cards.LastOrDefault()?.Number;
-			var expectedNextNumber = lastNumber?.Next() ?? Number.One;
+			var expectedNextNumber = pile.Top?.Number.Next() ?? Number.One;
 
 			return card.Number == expectedNextNumber;
 		}
