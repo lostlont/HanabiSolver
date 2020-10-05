@@ -13,7 +13,7 @@ namespace HanabiSolver.Library.Tests.Builders
 
 		public IDeck Deck { get; set; }
 		public Func<Pile> DiscardPileBuilder { get; set; } = () => new Pile();
-		public Func<Tokens> InformationTokensBuilder { get; set; } = () => new Tokens(3);
+		public Func<Tokens> InformationTokensBuilder { get; set; } = () => new Tokens(3, 1);
 		public Func<Tokens> FuseTokensBuilder { get; set; } = () => new Tokens(2, 0);
 		public Dictionary<Suite, Func<IPile>> PlayedCardsBuilder { get; } = EnumUtils.Values<Suite>().ToDictionary(suite => suite, suite => DefaultPileBuilder);
 
