@@ -78,13 +78,14 @@ namespace HanabiSolver.Library.Tests.Game
 				.Select(n => new Card(suite, n));
 
 			playerBuilder.Cards = new Card(suite, Number.Five).AsEnumerable();
-			playerBuilder.TableBuilder.InformationTokensBuilder = () => new Tokens(3, 0);
+			var informationTokens = new Mock<ITokens>();
+			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
 			playerBuilder.TableBuilder.PlayedCardsBuilder[suite] = () => new Pile(cardsPlayed);
 			var player = playerBuilder.Build();
 
 			player.Play(player.Cards.Single());
 
-			player.Table.InformationTokens.Amount.Should().Be(1);
+			informationTokens.Verify(t => t.Replenish(), Times.Once);
 		}
 
 		[Fact]

@@ -13,7 +13,7 @@ namespace HanabiSolver.Library.Tests.Builders
 
 		public IDeck Deck { get; set; }
 		public IPile DiscardPile { get; set; }
-		public Func<Tokens> InformationTokensBuilder { get; set; } = () => new Tokens(3, 1);
+		public ITokens InformationTokens { get; set; }
 		public Func<Tokens> FuseTokensBuilder { get; set; } = () => new Tokens(2, 0);
 		public Dictionary<Suite, Func<IPile>> PlayedCardsBuilder { get; } = EnumUtils.Values<Suite>().ToDictionary(suite => suite, suite => DefaultPileBuilder);
 
@@ -26,16 +26,15 @@ namespace HanabiSolver.Library.Tests.Builders
 				.Returns(new Card(Suite.Green, Number.Two))
 				.Returns(new Card(Suite.Blue, Number.Three));
 			Deck = someDeck.Object;
-
 			DiscardPile = new Mock<IPile>().Object;
+			InformationTokens = new Mock<ITokens>().Object;
 		}
 
 		public Table Build()
 		{
-			var informationTokens = InformationTokensBuilder();
 			var fuseTokens = FuseTokensBuilder();
 			var playedCards = PlayedCardsBuilder.Keys.ToDictionary(suite => suite, suite => PlayedCardsBuilder[suite]());
-			return new Table(Deck, DiscardPile, informationTokens, fuseTokens, playedCards);
+			return new Table(Deck, DiscardPile, InformationTokens, fuseTokens, playedCards);
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using HanabiSolver.Library.Game;
 using HanabiSolver.Library.Tests.Builders;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,19 +25,28 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void GiveInformationWithSuiteUsesInformationToken()
 		{
-			playerBuilder.TableBuilder.InformationTokensBuilder = () => new Tokens(3, 1);
+			var informationTokens = new Mock<ITokens>();
+			informationTokens
+				.Setup(t => t.Amount)
+				.Returns(1);
+			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
 			var player = playerBuilder.Build();
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player.GiveInformation(otherPlayer, Suite.White);
 
-			player.Table.InformationTokens.Amount.Should().Be(0);
+			informationTokens.Verify(t => t.Use(), Times.Once);
 		}
 
 		[Fact]
 		public void GiveInformationWithSuiteThrowsForNoInformationToken()
 		{
-			playerBuilder.TableBuilder.InformationTokensBuilder = () => new Tokens(3, 0);
+			// TODO Strict mode?
+			var informationTokens = new Mock<ITokens>();
+			informationTokens
+				.Setup(t => t.Amount)
+				.Returns(0);
+			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
 			var player = playerBuilder.Build();
 			var otherPlayer = otherPlayerBuilder.Build();
 
@@ -61,6 +71,11 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void GiveInformationWithSuiteSetsSuiteKnownOnCardsInSameSuite()
 		{
+			var informationTokens = new Mock<ITokens>();
+			informationTokens
+				.Setup(t => t.Amount)
+				.Returns(1);
+			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
 			var player = playerBuilder.Build();
 			var otherPlayer = otherPlayerBuilder.Build();
 
@@ -74,19 +89,27 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void GiveInformationWithNumberUsesInformationToken()
 		{
-			playerBuilder.TableBuilder.InformationTokensBuilder = () => new Tokens(3, 1);
+			var informationTokens = new Mock<ITokens>();
+			informationTokens
+				.Setup(t => t.Amount)
+				.Returns(1);
+			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
 			var player = playerBuilder.Build();
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player.GiveInformation(otherPlayer, Number.One);
 
-			player.Table.InformationTokens.Amount.Should().Be(0);
+			informationTokens.Verify(t => t.Use(), Times.Once);
 		}
 
 		[Fact]
 		public void GiveInformationWithNumberThrowsForNoInformationToken()
 		{
-			playerBuilder.TableBuilder.InformationTokensBuilder = () => new Tokens(3, 0);
+			var informationTokens = new Mock<ITokens>();
+			informationTokens
+				.Setup(t => t.Amount)
+				.Returns(0);
+			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
 			var player = playerBuilder.Build();
 			var otherPlayer = otherPlayerBuilder.Build();
 
@@ -111,6 +134,11 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void GiveInformationWithNumberSetsNumberKnownOnCardsWithSameNumber()
 		{
+			var informationTokens = new Mock<ITokens>();
+			informationTokens
+				.Setup(t => t.Amount)
+				.Returns(1);
+			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
 			var player = playerBuilder.Build();
 			var otherPlayer = otherPlayerBuilder.Build();
 
