@@ -2,6 +2,7 @@
 using HanabiSolver.Library.Extensions;
 using HanabiSolver.Library.Game;
 using HanabiSolver.Library.Utils;
+using Moq;
 using System.Linq;
 using Xunit;
 
@@ -15,7 +16,7 @@ namespace HanabiSolver.Library.Tests.Game
 			const Suite suite = Suite.Blue;
 			var cardToPlay = new Card(suite, Number.One);
 
-			playerBuilder.CardsBuilder = () => cardToPlay.AsEnumerable();
+			playerBuilder.Cards = cardToPlay.AsEnumerable();
 			var player = playerBuilder.Build();
 
 			player.Play(cardToPlay);
@@ -31,7 +32,7 @@ namespace HanabiSolver.Library.Tests.Game
 			var cardToPlay = new Card(suite, Number.Two);
 
 			playerBuilder.TableBuilder.PlayedCardsBuilder[suite] = () => new Pile(cardsPlayed);
-			playerBuilder.CardsBuilder = () => cardToPlay.AsEnumerable();
+			playerBuilder.Cards = cardToPlay.AsEnumerable();
 			var player = playerBuilder.Build();
 
 			player.Play(cardToPlay);
@@ -53,7 +54,7 @@ namespace HanabiSolver.Library.Tests.Game
 				.Select(n => new Card(suite, n))
 				.ToList();
 
-			playerBuilder.CardsBuilder = () => cardToPlay.AsEnumerable();
+			playerBuilder.Cards = cardToPlay.AsEnumerable();
 			playerBuilder.TableBuilder.PlayedCardsBuilder[suite] = () => new Pile(cardsPlayed);
 			var player = playerBuilder.Build();
 
@@ -73,7 +74,7 @@ namespace HanabiSolver.Library.Tests.Game
 				.SkipLast(1)
 				.Select(n => new Card(suite, n));
 
-			playerBuilder.CardsBuilder = () => new Card(suite, Number.Five).AsEnumerable();
+			playerBuilder.Cards = new Card(suite, Number.Five).AsEnumerable();
 			playerBuilder.TableBuilder.InformationTokensBuilder = () => new Tokens(3, 0);
 			playerBuilder.TableBuilder.PlayedCardsBuilder[suite] = () => new Pile(cardsPlayed);
 			var player = playerBuilder.Build();
@@ -86,14 +87,16 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void PlayDrawsFromDeck()
 		{
+			var deck = new Mock<IDeck>();
+			deck
+				.Setup(d => d.Draw())
+				.Returns(new Card(Suite.Red, Number.One));
+			playerBuilder.TableBuilder.Deck = deck.Object;
 			var player = playerBuilder.Build();
 
 			player.Play(player.Cards.First());
 
-			var expectedDeck = new Deck(cardsInDeck);
-			expectedDeck.Draw();
-
-			player.Table.Deck.Cards.Should().Equal(expectedDeck.Cards);
+			deck.Verify(d => d.Draw(), Times.Once);
 		}
 
 		[Theory]
@@ -101,13 +104,22 @@ namespace HanabiSolver.Library.Tests.Game
 		[InlineData(2)]
 		public void PlayMovesFromTopOfDeckToBeginningOfHand(int cardIndexToPlay)
 		{
+			var newCard = new Card(Suite.Red, Number.One);
+			var deck = new Mock<IDeck>();
+			deck
+				.Setup(d => d.Draw())
+				.Returns(newCard);
+			playerBuilder.TableBuilder.Deck = deck.Object;
 			var player = playerBuilder.Build();
-			var newCard = player.Table.Deck.Top;
 
-			player.Play(cardsInHand[cardIndexToPlay]);
+			var oldCards = player.Cards
+				.ExceptAt(cardIndexToPlay)
+				.ToList();
+
+			// TODO player.Cards should be indexable!
+			player.Play(player.Cards.ElementAt(cardIndexToPlay));
 
 			var newCards = newCard.AsEnumerable();
-			var oldCards = cardsInHand.ExceptAt(cardIndexToPlay);
 			var expectedCards = Enumerable.Concat(newCards, oldCards);
 			player.Cards.Should().Equal(expectedCards);
 		}
@@ -126,13 +138,17 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void PlayAddsEmptyInformationForDrawnCard()
 		{
+			var newCard = new Card(Suite.Red, Number.One);
+			var deck = new Mock<IDeck>();
+			deck
+				.Setup(d => d.Draw())
+				.Returns(newCard);
+			playerBuilder.TableBuilder.Deck = deck.Object;
 			var player = playerBuilder.Build();
-			var cardToPlay = cardsInHand.First();
-			var drawnCard = player.Table.Deck.Top;
 
-			player.Play(cardToPlay);
+			player.Play(player.Cards.First());
 
-			player.Information.Keys.Should().Contain(drawnCard);
+			player.Information.Keys.Should().Contain(newCard);
 		}
 	}
 }

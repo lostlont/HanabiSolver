@@ -12,7 +12,7 @@ namespace HanabiSolver.Library.Tests.Game
 	{
 		private readonly PlayerBuilder otherPlayerBuilder = new PlayerBuilder
 		{
-			CardsBuilder = () => new List<Card>
+			Cards = new List<Card>
 			{
 				new Card(Suite.White, Number.One),
 				new Card(Suite.Yellow, Number.Two),

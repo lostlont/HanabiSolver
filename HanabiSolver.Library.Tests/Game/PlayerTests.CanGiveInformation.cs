@@ -40,7 +40,7 @@ namespace HanabiSolver.Library.Tests.Game
 				[otherPlayerCards[0]] = new Information { IsSuiteKnown = true },
 				[otherPlayerCards[1]] = new Information { IsSuiteKnown = false },
 			};
-			otherPlayerBuilder.CardsBuilder = () => otherPlayerCards;
+			otherPlayerBuilder.Cards = otherPlayerCards;
 			otherPlayerBuilder.InformationBuilder = card => otherPlayerInformation[card];
 			var otherPlayer = otherPlayerBuilder.Build();
 
@@ -57,7 +57,7 @@ namespace HanabiSolver.Library.Tests.Game
 				new Card(Suite.White, Number.One),
 				new Card(Suite.White, Number.Two),
 			};
-			otherPlayerBuilder.CardsBuilder = () => otherPlayerCards;
+			otherPlayerBuilder.Cards = otherPlayerCards;
 			otherPlayerBuilder.InformationBuilder = card => new Information { IsSuiteKnown = true };
 			var otherPlayer = otherPlayerBuilder.Build();
 
@@ -107,7 +107,7 @@ namespace HanabiSolver.Library.Tests.Game
 				[otherPlayerCards[0]] = new Information { IsSuiteKnown = true },
 				[otherPlayerCards[1]] = new Information { IsSuiteKnown = false },
 			};
-			otherPlayerBuilder.CardsBuilder = () => otherPlayerCards;
+			otherPlayerBuilder.Cards = otherPlayerCards;
 			otherPlayerBuilder.InformationBuilder = card => otherPlayerInformation[card];
 			var otherPlayer = otherPlayerBuilder.Build();
 
@@ -124,7 +124,7 @@ namespace HanabiSolver.Library.Tests.Game
 				new Card(Suite.White, Number.One),
 				new Card(Suite.Yellow, Number.One),
 			};
-			otherPlayerBuilder.CardsBuilder = () => otherPlayerCards;
+			otherPlayerBuilder.Cards = otherPlayerCards;
 			otherPlayerBuilder.InformationBuilder = card => new Information { IsNumberKnown = true };
 			var otherPlayer = otherPlayerBuilder.Build();
 
