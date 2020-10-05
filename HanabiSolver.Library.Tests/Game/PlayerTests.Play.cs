@@ -47,6 +47,7 @@ namespace HanabiSolver.Library.Tests.Game
 		[InlineData(Number.Five, Number.Three)]
 		public void PlayWrongNumberGivesFuseTokenAndDiscardsCard(Number playedNumber, Number? lastNumber)
 		{
+			// TODO Split complex tests!
 			const Suite suite = Suite.Blue;
 			var cardToPlay = new Card(suite, playedNumber);
 			var cardsPlayed = lastNumber
@@ -56,13 +57,15 @@ namespace HanabiSolver.Library.Tests.Game
 
 			playerBuilder.Cards = cardToPlay.AsEnumerable();
 			playerBuilder.TableBuilder.PlayedCardsBuilder[suite] = () => new Pile(cardsPlayed);
+			var discardPile = new Mock<IPile>();
+			playerBuilder.TableBuilder.DiscardPile = discardPile.Object;
 			var player = playerBuilder.Build();
 
 			player.Play(cardToPlay);
 
 			player.Table.PlayedCards[suite].Cards.Should().Equal(cardsPlayed);
 			player.Table.FuseTokens.Amount.Should().Be(1);
-			player.Table.DiscardPile.Top.Should().Be(cardToPlay);
+			discardPile.Verify(p => p.Add(It.Is<Card>(c => c == cardToPlay)), Times.Once);
 		}
 
 		[Fact]
