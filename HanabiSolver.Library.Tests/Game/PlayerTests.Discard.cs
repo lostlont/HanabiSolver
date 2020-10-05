@@ -115,20 +115,34 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void DiscardReplenishesInformationToken()
 		{
-			// TODO Continue stubbing from here!
-			var player = playerBuilder.Build();
+			Setup();
+			var informationTokens = new Mock<ITokens>();
+			var table = new Table(
+				someDeck.Object,
+				emptyDiscardPile.Object,
+				informationTokens.Object,
+				new Mock<ITokens>().Object,
+				EnumUtils.Values<Suite>().ToDictionary(suite => suite, suite => new Mock<IPile>().Object));
+			var player = new Player(someCards, table);
 
-			player.Discard(cardsInHand[0]);
+			player.Discard(player.Cards.First());
 
-			player.Table.InformationTokens.Amount.Should().Be(2);
+			informationTokens.Verify(t => t.Replenish(), Times.Once);
 		}
 
 		[Fact]
 		public void DiscardGetsRidOfInformation()
 		{
-			var player = playerBuilder.Build();
-			var cardToDiscard = cardsInHand.First();
+			Setup();
+			var table = new Table(
+				someDeck.Object,
+				emptyDiscardPile.Object,
+				new Mock<ITokens>().Object,
+				new Mock<ITokens>().Object,
+				EnumUtils.Values<Suite>().ToDictionary(suite => suite, suite => new Mock<IPile>().Object));
+			var player = new Player(someCards, table);
 
+			var cardToDiscard = player.Cards.First();
 			player.Discard(cardToDiscard);
 
 			player.Information.Keys.Should().NotContain(cardToDiscard);
@@ -137,13 +151,23 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void DiscardAddsEmptyInformationForDrawnCard()
 		{
-			var player = playerBuilder.Build();
-			var cardToDiscard = cardsInHand.First();
-			var drawnCard = player.Table.Deck.Top;
+			Setup();
+			var newCard = new Card(Suite.Red, Number.One);
+			var deck = new Mock<IDeck>();
+			deck
+				.Setup(d => d.Draw())
+				.Returns(newCard);
+			var table = new Table(
+				deck.Object,
+				emptyDiscardPile.Object,
+				new Mock<ITokens>().Object,
+				new Mock<ITokens>().Object,
+				EnumUtils.Values<Suite>().ToDictionary(suite => suite, suite => new Mock<IPile>().Object));
+			var player = new Player(someCards, table);
 
-			player.Discard(cardToDiscard);
+			player.Discard(player.Cards.First());
 
-			player.Information.Keys.Should().Contain(drawnCard);
+			player.Information.Keys.Should().Contain(newCard);
 		}
 	}
 }
