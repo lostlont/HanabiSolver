@@ -56,6 +56,8 @@ namespace HanabiSolver.Library.Tests.Game
 				.ToList();
 
 			playerBuilder.Cards = cardToPlay.AsEnumerable();
+			var fuseTokens = new Mock<ITokens>();
+			playerBuilder.TableBuilder.FuseTokens = fuseTokens.Object;
 			playerBuilder.TableBuilder.PlayedCardsBuilder[suite] = () => new Pile(cardsPlayed);
 			var discardPile = new Mock<IPile>();
 			playerBuilder.TableBuilder.DiscardPile = discardPile.Object;
@@ -64,7 +66,7 @@ namespace HanabiSolver.Library.Tests.Game
 			player.Play(cardToPlay);
 
 			player.Table.PlayedCards[suite].Cards.Should().Equal(cardsPlayed);
-			player.Table.FuseTokens.Amount.Should().Be(1);
+			fuseTokens.Verify(t => t.Replenish(), Times.Once);
 			discardPile.Verify(p => p.Add(It.Is<Card>(c => c == cardToPlay)), Times.Once);
 		}
 
