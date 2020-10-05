@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using HanabiSolver.Library.Game;
+using HanabiSolver.Library.Tests.Builders;
 using Moq;
 using System.Collections.Generic;
 using Xunit;
@@ -11,12 +12,6 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanGiveInformationForExistingSuite()
 		{
-			// TODO Use stub InformationTokens in TableBuilder as default?
-			var informationTokens = new Mock<ITokens>();
-			informationTokens
-				.Setup(t => t.Amount)
-				.Returns(1);
-			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
 			var player = playerBuilder.Build();
 			var otherPlayer = otherPlayerBuilder.Build();
 
@@ -35,11 +30,6 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanGiveInformationForPartiallyInformedSuite()
 		{
-			var informationTokens = new Mock<ITokens>();
-			informationTokens
-				.Setup(t => t.Amount)
-				.Returns(1);
-			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
 			var player = playerBuilder.Build();
 
 			var otherPlayerCards = new List<Card>
@@ -79,7 +69,7 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanNotGiveInformationForSuiteWithNoInformationTokens()
 		{
-			// TODO Check!
+			playerBuilder.TableBuilder.InformationTokens = TableBuilder.BuildEmptyTokens();
 			var player = playerBuilder.Build();
 			var otherPlayer = otherPlayerBuilder.Build();
 
@@ -89,11 +79,6 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanGiveInformationForExistingNumber()
 		{
-			var informationTokens = new Mock<ITokens>();
-			informationTokens
-				.Setup(t => t.Amount)
-				.Returns(1);
-			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
 			var player = playerBuilder.Build();
 			var otherPlayer = otherPlayerBuilder.Build();
 
@@ -112,11 +97,6 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanGiveInformationForPartiallyInformedNumber()
 		{
-			var informationTokens = new Mock<ITokens>();
-			informationTokens
-				.Setup(t => t.Amount)
-				.Returns(1);
-			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
 			var player = playerBuilder.Build();
 
 			var otherPlayerCards = new List<Card>
@@ -156,7 +136,7 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanNotGiveInformationForNumberWithNoInformationTokens()
 		{
-			// TODO Check!
+			playerBuilder.TableBuilder.InformationTokens = TableBuilder.BuildEmptyTokens();
 			var player = playerBuilder.Build();
 			var otherPlayer = otherPlayerBuilder.Build();
 
