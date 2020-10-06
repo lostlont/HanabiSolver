@@ -17,8 +17,8 @@ namespace HanabiSolver.Library.Tests.Game
 			const Suite suite = Suite.Blue;
 			var cardToPlay = new Card(suite, Number.One);
 
-			var pile = new Mock<IPile>();
-			pile
+			var playedPile = new Mock<IPile>();
+			playedPile
 				.Setup(p => p.Top)
 				.Returns((Card?)null);
 
@@ -29,7 +29,7 @@ namespace HanabiSolver.Library.Tests.Game
 				{
 					PlayedCards = new Dictionary<Suite, IPile>
 					{
-						[suite] = pile.Object,
+						[suite] = playedPile.Object,
 					},
 				},
 			};
@@ -37,7 +37,7 @@ namespace HanabiSolver.Library.Tests.Game
 
 			player.Play(cardToPlay);
 
-			pile.Verify(p => p.Add(It.Is<Card>(c => c == cardToPlay)), Times.Once);
+			playedPile.Verify(p => p.Add(It.Is<Card>(c => c == cardToPlay)), Times.Once);
 		}
 
 		[Fact]
@@ -46,8 +46,8 @@ namespace HanabiSolver.Library.Tests.Game
 			const Suite suite = Suite.Blue;
 			var cardToPlay = new Card(suite, Number.Two);
 
-			var pile = new Mock<IPile>();
-			pile
+			var playedPile = new Mock<IPile>();
+			playedPile
 				.Setup(p => p.Top)
 				.Returns(new Card(suite, Number.One));
 
@@ -58,7 +58,7 @@ namespace HanabiSolver.Library.Tests.Game
 				{
 					PlayedCards = new Dictionary<Suite, IPile>
 					{
-						[suite] = pile.Object,
+						[suite] = playedPile.Object,
 					},
 				},
 			};
@@ -66,7 +66,7 @@ namespace HanabiSolver.Library.Tests.Game
 
 			player.Play(cardToPlay);
 
-			pile.Verify(p => p.Add(It.Is<Card>(c => c == cardToPlay)), Times.Once);
+			playedPile.Verify(p => p.Add(It.Is<Card>(c => c == cardToPlay)), Times.Once);
 		}
 
 		[Theory]
@@ -83,11 +83,10 @@ namespace HanabiSolver.Library.Tests.Game
 			var topCardPlayed = lastNumber.HasValue
 				? new Card(suite, lastNumber.Value)
 				: null;
-			var pile = new Mock<IPile>();
-			pile
+			var playedPile = new Mock<IPile>();
+			playedPile
 				.Setup(p => p.Top)
 				.Returns(topCardPlayed);
-			// TODO Rename all 'pile's to 'playedPile'.
 
 			var playerBuilder = new PlayerBuilder
 			{
@@ -98,7 +97,7 @@ namespace HanabiSolver.Library.Tests.Game
 					FuseTokens = fuseTokens.Object,
 					PlayedCards = new Dictionary<Suite, IPile>
 					{
-						[suite] = pile.Object,
+						[suite] = playedPile.Object,
 					},
 				},
 			};
@@ -106,7 +105,7 @@ namespace HanabiSolver.Library.Tests.Game
 
 			player.Play(cardToPlay);
 
-			pile.Verify(p => p.Add(It.IsAny<Card>()), Times.Never);
+			playedPile.Verify(p => p.Add(It.IsAny<Card>()), Times.Never);
 			fuseTokens.Verify(t => t.Replenish(), Times.Once);
 			discardPile.Verify(p => p.Add(It.Is<Card>(c => c == cardToPlay)), Times.Once);
 		}
@@ -116,8 +115,8 @@ namespace HanabiSolver.Library.Tests.Game
 		{
 			const Suite suite = Suite.Blue;
 			var informationTokens = new Mock<ITokens>();
-			var pile = new Mock<IPile>();
-			pile
+			var playedPile = new Mock<IPile>();
+			playedPile
 				.Setup(p => p.Top)
 				.Returns(new Card(suite, Number.Four));
 
@@ -129,7 +128,7 @@ namespace HanabiSolver.Library.Tests.Game
 					InformationTokens = informationTokens.Object,
 					PlayedCards = new Dictionary<Suite, IPile>
 					{
-						[suite] = pile.Object,
+						[suite] = playedPile.Object,
 					},
 				},
 			};
