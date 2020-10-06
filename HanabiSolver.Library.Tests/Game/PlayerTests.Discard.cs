@@ -86,8 +86,7 @@ namespace HanabiSolver.Library.Tests.Game
 				.ExceptAt(cardIndexToDiscard)
 				.ToList();
 
-			// TODO player.Cards should be indexable!
-			player.Discard(player.Cards.ElementAt(cardIndexToDiscard));
+			player.Discard(player.Cards[cardIndexToDiscard]);
 
 			var newCards = newCard.AsEnumerable();
 			var expectedCards = Enumerable.Concat(newCards, oldCards);

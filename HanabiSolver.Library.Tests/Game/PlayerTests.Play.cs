@@ -185,8 +185,7 @@ namespace HanabiSolver.Library.Tests.Game
 				.ExceptAt(cardIndexToPlay)
 				.ToList();
 
-			// TODO player.Cards should be indexable!
-			player.Play(player.Cards.ElementAt(cardIndexToPlay));
+			player.Play(player.Cards[cardIndexToPlay]);
 
 			var newCards = newCard.AsEnumerable();
 			var expectedCards = Enumerable.Concat(newCards, oldCards);

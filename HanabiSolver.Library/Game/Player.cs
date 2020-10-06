@@ -10,7 +10,7 @@ namespace HanabiSolver.Library.Game
 		private readonly List<Card> cards;
 		private readonly Dictionary<Card, Information> information = new Dictionary<Card, Information>();
 
-		public IReadOnlyCollection<Card> Cards => cards;
+		public IReadOnlyList<Card> Cards => cards;
 		public IReadOnlyDictionary<Card, Information> Information => information;
 		public Table Table { get; }
 
