@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using HanabiSolver.Library.Game;
 using HanabiSolver.Library.Tests.Builders;
+using Moq;
 using System.Collections.Generic;
 using Xunit;
 
@@ -87,7 +88,7 @@ namespace HanabiSolver.Library.Tests.Game
 			{
 				TableBuilder = new TableBuilder
 				{
-					InformationTokens = TableBuilder.BuildEmptyTokens(),
+					InformationTokens = new Mock<ITokens>().Object,
 				},
 			};
 			var player = playerBuilder.Build();
@@ -174,7 +175,7 @@ namespace HanabiSolver.Library.Tests.Game
 			{
 				TableBuilder = new TableBuilder
 				{
-					InformationTokens = TableBuilder.BuildEmptyTokens(),
+					InformationTokens = new Mock<ITokens>().Object,
 				},
 			};
 			var player = playerBuilder.Build();

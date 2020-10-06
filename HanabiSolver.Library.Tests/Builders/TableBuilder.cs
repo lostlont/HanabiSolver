@@ -19,8 +19,7 @@ namespace HanabiSolver.Library.Tests.Builders
 			return new Table(Deck, DiscardPile, InformationTokens, FuseTokens, PlayedCards);
 		}
 
-		// TODO Privatize?
-		public static IDeck BuildSomeDeck()
+		private static IDeck BuildSomeDeck()
 		{
 			var deck = new Mock<IDeck>();
 			deck
@@ -32,7 +31,7 @@ namespace HanabiSolver.Library.Tests.Builders
 			return deck.Object;
 		}
 
-		public static ITokens BuildSomeTokens()
+		private static ITokens BuildSomeTokens()
 		{
 			var tokens = new Mock<ITokens>();
 			tokens
@@ -42,7 +41,7 @@ namespace HanabiSolver.Library.Tests.Builders
 			return tokens.Object;
 		}
 
-		public static ITokens BuildEmptyTokens()
+		private static ITokens BuildEmptyTokens()
 		{
 			var tokens = new Mock<ITokens>();
 			tokens
@@ -52,7 +51,7 @@ namespace HanabiSolver.Library.Tests.Builders
 			return tokens.Object;
 		}
 
-		public static IPile BuildEmptyPile()
+		private static IPile BuildEmptyPile()
 		{
 			var pile = new Mock<IPile>();
 			pile
