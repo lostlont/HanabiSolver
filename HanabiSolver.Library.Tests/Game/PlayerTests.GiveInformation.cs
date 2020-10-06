@@ -11,15 +11,12 @@ namespace HanabiSolver.Library.Tests.Game
 {
 	public partial class PlayerTests
 	{
-		private readonly PlayerBuilder otherPlayerBuilder = new PlayerBuilder
+		private readonly IReadOnlyList<Card> otherPlayerCards = new List<Card>
 		{
-			Cards = new List<Card>
-			{
-				new Card(Suite.White, Number.One),
-				new Card(Suite.Yellow, Number.Two),
-				new Card(Suite.Green, Number.Three),
-				new Card(Suite.Yellow, Number.One),
-			},
+			new Card(Suite.White, Number.One),
+			new Card(Suite.Yellow, Number.Two),
+			new Card(Suite.Green, Number.Three),
+			new Card(Suite.Yellow, Number.One),
 		};
 
 		[Fact]
@@ -29,8 +26,18 @@ namespace HanabiSolver.Library.Tests.Game
 			informationTokens
 				.Setup(t => t.Amount)
 				.Returns(1);
-			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					InformationTokens = informationTokens.Object,
+				},
+			};
 			var player = playerBuilder.Build();
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player.GiveInformation(otherPlayer, Suite.White);
@@ -46,8 +53,18 @@ namespace HanabiSolver.Library.Tests.Game
 			informationTokens
 				.Setup(t => t.Amount)
 				.Returns(0);
-			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					InformationTokens = informationTokens.Object,
+				},
+			};
 			var player = playerBuilder.Build();
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player
@@ -59,7 +76,11 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void GiveInformationWithSuiteThrowsForNoSuchSuite()
 		{
-			var player = playerBuilder.Build();
+			var player = new PlayerBuilder().Build();
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player
@@ -75,8 +96,18 @@ namespace HanabiSolver.Library.Tests.Game
 			informationTokens
 				.Setup(t => t.Amount)
 				.Returns(1);
-			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					InformationTokens = informationTokens.Object,
+				},
+			};
 			var player = playerBuilder.Build();
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			var card = otherPlayer.Cards.First();
@@ -93,8 +124,18 @@ namespace HanabiSolver.Library.Tests.Game
 			informationTokens
 				.Setup(t => t.Amount)
 				.Returns(1);
-			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					InformationTokens = informationTokens.Object,
+				},
+			};
 			var player = playerBuilder.Build();
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player.GiveInformation(otherPlayer, Number.One);
@@ -109,8 +150,18 @@ namespace HanabiSolver.Library.Tests.Game
 			informationTokens
 				.Setup(t => t.Amount)
 				.Returns(0);
-			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					InformationTokens = informationTokens.Object,
+				},
+			};
 			var player = playerBuilder.Build();
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player
@@ -122,7 +173,11 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void GiveInformationWithNumberThrowsForNoSuchNumber()
 		{
-			var player = playerBuilder.Build();
+			var player = new PlayerBuilder().Build();
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player
@@ -138,8 +193,18 @@ namespace HanabiSolver.Library.Tests.Game
 			informationTokens
 				.Setup(t => t.Amount)
 				.Returns(1);
-			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					InformationTokens = informationTokens.Object,
+				},
+			};
 			var player = playerBuilder.Build();
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			var card = otherPlayer.Cards.First();

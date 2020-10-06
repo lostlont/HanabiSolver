@@ -12,7 +12,7 @@ namespace HanabiSolver.Library.Tests.Builders
 		public IPile DiscardPile { get; set; } = new Mock<IPile>().Object;
 		public ITokens InformationTokens { get; set; } = BuildSomeTokens();
 		public ITokens FuseTokens { get; set; } = BuildEmptyTokens();
-		public Dictionary<Suite, IPile> PlayedCards { get; } = EnumUtils.Values<Suite>().ToDictionary(suite => suite, suite => BuildEmptyPile());
+		public Dictionary<Suite, IPile> PlayedCards { get; set; } = EnumUtils.Values<Suite>().ToDictionary(suite => suite, suite => BuildEmptyPile());
 
 		public Table Build()
 		{

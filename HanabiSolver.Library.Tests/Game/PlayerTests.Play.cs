@@ -1,8 +1,9 @@
 ﻿using FluentAssertions;
 using HanabiSolver.Library.Extensions;
 using HanabiSolver.Library.Game;
-using HanabiSolver.Library.Utils;
+using HanabiSolver.Library.Tests.Builders;
 using Moq;
+using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -16,12 +17,22 @@ namespace HanabiSolver.Library.Tests.Game
 			const Suite suite = Suite.Blue;
 			var cardToPlay = new Card(suite, Number.One);
 
-			playerBuilder.Cards = cardToPlay.AsEnumerable();
 			var pile = new Mock<IPile>();
 			pile
 				.Setup(p => p.Top)
 				.Returns((Card?)null);
-			playerBuilder.TableBuilder.PlayedCards[suite] = pile.Object;
+
+			var playerBuilder = new PlayerBuilder
+			{
+				Cards = cardToPlay.AsEnumerable(),
+				TableBuilder = new TableBuilder
+				{
+					PlayedCards = new Dictionary<Suite, IPile>
+					{
+						[suite] = pile.Object,
+					},
+				},
+			};
 			var player = playerBuilder.Build();
 
 			player.Play(cardToPlay);
@@ -35,12 +46,22 @@ namespace HanabiSolver.Library.Tests.Game
 			const Suite suite = Suite.Blue;
 			var cardToPlay = new Card(suite, Number.Two);
 
-			playerBuilder.Cards = cardToPlay.AsEnumerable();
 			var pile = new Mock<IPile>();
 			pile
 				.Setup(p => p.Top)
 				.Returns(new Card(suite, Number.One));
-			playerBuilder.TableBuilder.PlayedCards[suite] = pile.Object;
+
+			var playerBuilder = new PlayerBuilder
+			{
+				Cards = cardToPlay.AsEnumerable(),
+				TableBuilder = new TableBuilder
+				{
+					PlayedCards = new Dictionary<Suite, IPile>
+					{
+						[suite] = pile.Object,
+					},
+				},
+			};
 			var player = playerBuilder.Build();
 
 			player.Play(cardToPlay);
@@ -57,20 +78,30 @@ namespace HanabiSolver.Library.Tests.Game
 			// TODO Split complex tests!
 			const Suite suite = Suite.Blue;
 			var cardToPlay = new Card(suite, playedNumber);
+			var discardPile = new Mock<IPile>();
+			var fuseTokens = new Mock<ITokens>();
 			var topCardPlayed = lastNumber.HasValue
 				? new Card(suite, lastNumber.Value)
 				: null;
-
-			playerBuilder.Cards = cardToPlay.AsEnumerable();
-			var fuseTokens = new Mock<ITokens>();
-			playerBuilder.TableBuilder.FuseTokens = fuseTokens.Object;
 			var pile = new Mock<IPile>();
 			pile
 				.Setup(p => p.Top)
 				.Returns(topCardPlayed);
-			playerBuilder.TableBuilder.PlayedCards[suite] = pile.Object;
-			var discardPile = new Mock<IPile>();
-			playerBuilder.TableBuilder.DiscardPile = discardPile.Object;
+			// TODO Rename all 'pile's to 'playedPile'.
+
+			var playerBuilder = new PlayerBuilder
+			{
+				Cards = cardToPlay.AsEnumerable(),
+				TableBuilder = new TableBuilder
+				{
+					DiscardPile = discardPile.Object,
+					FuseTokens = fuseTokens.Object,
+					PlayedCards = new Dictionary<Suite, IPile>
+					{
+						[suite] = pile.Object,
+					},
+				},
+			};
 			var player = playerBuilder.Build();
 
 			player.Play(cardToPlay);
@@ -84,18 +115,27 @@ namespace HanabiSolver.Library.Tests.Game
 		public void PlayFiveReplenishesInformationToken()
 		{
 			const Suite suite = Suite.Blue;
-
-			playerBuilder.Cards = new Card(suite, Number.Five).AsEnumerable();
 			var informationTokens = new Mock<ITokens>();
-			playerBuilder.TableBuilder.InformationTokens = informationTokens.Object;
 			var pile = new Mock<IPile>();
 			pile
 				.Setup(p => p.Top)
 				.Returns(new Card(suite, Number.Four));
-			playerBuilder.TableBuilder.PlayedCards[suite] = pile.Object;
+
+			var playerBuilder = new PlayerBuilder
+			{
+				Cards = new Card(suite, Number.Five).AsEnumerable(),
+				TableBuilder = new TableBuilder
+				{
+					InformationTokens = informationTokens.Object,
+					PlayedCards = new Dictionary<Suite, IPile>
+					{
+						[suite] = pile.Object,
+					},
+				},
+			};
 			var player = playerBuilder.Build();
 
-			player.Play(player.Cards.Single());
+			player.Play(player.Cards.First());
 
 			informationTokens.Verify(t => t.Replenish(), Times.Once);
 		}
@@ -107,7 +147,14 @@ namespace HanabiSolver.Library.Tests.Game
 			deck
 				.Setup(d => d.Draw())
 				.Returns(new Card(Suite.Red, Number.One));
-			playerBuilder.TableBuilder.Deck = deck.Object;
+
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					Deck = deck.Object,
+				},
+			};
 			var player = playerBuilder.Build();
 
 			player.Play(player.Cards.First());
@@ -125,7 +172,14 @@ namespace HanabiSolver.Library.Tests.Game
 			deck
 				.Setup(d => d.Draw())
 				.Returns(newCard);
-			playerBuilder.TableBuilder.Deck = deck.Object;
+
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					Deck = deck.Object,
+				},
+			};
 			var player = playerBuilder.Build();
 
 			var oldCards = player.Cards
@@ -143,7 +197,7 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void PlayGetsRidOfInformation()
 		{
-			var player = playerBuilder.Build();
+			var player = new PlayerBuilder().Build();
 			var cardToPlay = player.Cards.First();
 
 			player.Play(cardToPlay);
@@ -159,7 +213,14 @@ namespace HanabiSolver.Library.Tests.Game
 			deck
 				.Setup(d => d.Draw())
 				.Returns(newCard);
-			playerBuilder.TableBuilder.Deck = deck.Object;
+
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					Deck = deck.Object,
+				},
+			};
 			var player = playerBuilder.Build();
 
 			player.Play(player.Cards.First());

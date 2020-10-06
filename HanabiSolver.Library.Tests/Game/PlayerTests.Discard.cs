@@ -1,10 +1,9 @@
 ﻿using FluentAssertions;
 using HanabiSolver.Library.Extensions;
 using HanabiSolver.Library.Game;
-using HanabiSolver.Library.Utils;
+using HanabiSolver.Library.Tests.Builders;
 using Moq;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
@@ -12,56 +11,30 @@ namespace HanabiSolver.Library.Tests.Game
 {
 	public partial class PlayerTests
 	{
-		private readonly IReadOnlyList<Card> someCards = new List<Card>
-		{
-			new Card(Suite.White, Number.Five),
-			new Card(Suite.White, Number.One),
-			new Card(Suite.Red, Number.Three),
-		};
-
-		private readonly Mock<IDeck> someDeck = new Mock<IDeck>();
-
-		private readonly Mock<IPile> emptyDiscardPile = new Mock<IPile>();
-
-		private void Setup()
-		{
-			someDeck
-				.SetupSequence(d => d.Draw())
-				.Returns(new Card(Suite.Red, Number.One))
-				.Returns(new Card(Suite.Green, Number.Two))
-				.Returns(new Card(Suite.Blue, Number.Three));
-		}
-
 		[Fact]
 		public void DiscardAddsCardToDiscardPile()
 		{
-			Setup();
-			var table = new Table(
-				someDeck.Object,
-				emptyDiscardPile.Object,
-				new Mock<ITokens>().Object,
-				new Mock<ITokens>().Object,
-				EnumUtils.Values<Suite>().ToDictionary(suite => suite, suite => new Mock<IPile>().Object));
-			var player = new Player(someCards, table);
+			var discardPile = new Mock<IPile>();
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					DiscardPile = discardPile.Object,
+				},
+			};
+			var player = playerBuilder.Build();
 
 			player.Discard(player.Cards.First());
 
-			emptyDiscardPile.Verify(p => p.Add(It.IsAny<Card>()), Times.Once);
+			discardPile.Verify(p => p.Add(It.IsAny<Card>()), Times.Once);
 		}
 
 		[Fact]
 		public void DiscardingUnownedCardThrowsException()
 		{
-			Setup();
-			var table = new Table(
-				someDeck.Object,
-				emptyDiscardPile.Object,
-				new Mock<ITokens>().Object,
-				new Mock<ITokens>().Object,
-				EnumUtils.Values<Suite>().ToDictionary(suite => suite, suite => new Mock<IPile>().Object));
-			var player = new Player(someCards, table);
-
+			var player = new PlayerBuilder().Build();
 			var unownedCard = new Card(Suite.Blue, Number.Five);
+
 			player
 				.Invoking(player => player.Discard(unownedCard))
 				.Should().Throw<InvalidOperationException>();
@@ -70,18 +43,23 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void DiscardDrawsFromDeck()
 		{
-			Setup();
-			var table = new Table(
-				someDeck.Object,
-				emptyDiscardPile.Object,
-				new Mock<ITokens>().Object,
-				new Mock<ITokens>().Object,
-				EnumUtils.Values<Suite>().ToDictionary(suite => suite, suite => new Mock<IPile>().Object));
-			var player = new Player(someCards, table);
+			var deck = new Mock<IDeck>();
+			deck
+				.Setup(d => d.Draw())
+				.Returns(new Card(Suite.Red, Number.One));
+
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					Deck = deck.Object,
+				},
+			};
+			var player = playerBuilder.Build();
 
 			player.Discard(player.Cards.First());
 
-			someDeck.Verify(d => d.Draw(), Times.Once);
+			deck.Verify(d => d.Draw(), Times.Once);
 		}
 
 		[Theory]
@@ -89,25 +67,29 @@ namespace HanabiSolver.Library.Tests.Game
 		[InlineData(2)]
 		public void DiscardMovesFromDeckToBeginningOfHand(int cardIndexToDiscard)
 		{
-			Setup();
 			var newCard = new Card(Suite.Red, Number.One);
 			var deck = new Mock<IDeck>();
 			deck
 				.Setup(d => d.Draw())
 				.Returns(newCard);
-			var table = new Table(
-				deck.Object,
-				emptyDiscardPile.Object,
-				new Mock<ITokens>().Object,
-				new Mock<ITokens>().Object,
-				EnumUtils.Values<Suite>().ToDictionary(suite => suite, suite => new Mock<IPile>().Object));
-			var player = new Player(someCards, table);
+
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					Deck = deck.Object,
+				},
+			};
+			var player = playerBuilder.Build();
+
+			var oldCards = player.Cards
+				.ExceptAt(cardIndexToDiscard)
+				.ToList();
 
 			// TODO player.Cards should be indexable!
 			player.Discard(player.Cards.ElementAt(cardIndexToDiscard));
 
 			var newCards = newCard.AsEnumerable();
-			var oldCards = someCards.ExceptAt(cardIndexToDiscard);
 			var expectedCards = Enumerable.Concat(newCards, oldCards);
 			player.Cards.Should().Equal(expectedCards);
 		}
@@ -115,15 +97,15 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void DiscardReplenishesInformationToken()
 		{
-			Setup();
 			var informationTokens = new Mock<ITokens>();
-			var table = new Table(
-				someDeck.Object,
-				emptyDiscardPile.Object,
-				informationTokens.Object,
-				new Mock<ITokens>().Object,
-				EnumUtils.Values<Suite>().ToDictionary(suite => suite, suite => new Mock<IPile>().Object));
-			var player = new Player(someCards, table);
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					InformationTokens = informationTokens.Object,
+				},
+			};
+			var player = playerBuilder.Build();
 
 			player.Discard(player.Cards.First());
 
@@ -133,14 +115,7 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void DiscardGetsRidOfInformation()
 		{
-			Setup();
-			var table = new Table(
-				someDeck.Object,
-				emptyDiscardPile.Object,
-				new Mock<ITokens>().Object,
-				new Mock<ITokens>().Object,
-				EnumUtils.Values<Suite>().ToDictionary(suite => suite, suite => new Mock<IPile>().Object));
-			var player = new Player(someCards, table);
+			var player = new PlayerBuilder().Build();
 
 			var cardToDiscard = player.Cards.First();
 			player.Discard(cardToDiscard);
@@ -151,19 +126,20 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void DiscardAddsEmptyInformationForDrawnCard()
 		{
-			Setup();
 			var newCard = new Card(Suite.Red, Number.One);
 			var deck = new Mock<IDeck>();
 			deck
 				.Setup(d => d.Draw())
 				.Returns(newCard);
-			var table = new Table(
-				deck.Object,
-				emptyDiscardPile.Object,
-				new Mock<ITokens>().Object,
-				new Mock<ITokens>().Object,
-				EnumUtils.Values<Suite>().ToDictionary(suite => suite, suite => new Mock<IPile>().Object));
-			var player = new Player(someCards, table);
+
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					Deck = deck.Object,
+				},
+			};
+			var player = playerBuilder.Build();
 
 			player.Discard(player.Cards.First());
 

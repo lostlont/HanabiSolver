@@ -9,6 +9,7 @@ namespace HanabiSolver.Library.Tests.Builders
 	{
 		public IEnumerable<Card> Cards { get; set; }
 		public TableBuilder TableBuilder { get; set; } = new TableBuilder();
+		// TODO Concretize InformationBuilder.
 		public Func<Card, Information> InformationBuilder { get; set; } = card => new Information();
 
 		public PlayerBuilder()

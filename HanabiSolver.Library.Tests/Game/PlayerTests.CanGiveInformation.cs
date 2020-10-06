@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using HanabiSolver.Library.Game;
 using HanabiSolver.Library.Tests.Builders;
-using Moq;
 using System.Collections.Generic;
 using Xunit;
 
@@ -9,10 +8,15 @@ namespace HanabiSolver.Library.Tests.Game
 {
 	public partial class PlayerTests
 	{
+		// TODO Instead of otherPlayer a mock should be used!
 		[Fact]
 		public void CanGiveInformationForExistingSuite()
 		{
-			var player = playerBuilder.Build();
+			var player = new PlayerBuilder().Build();
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player.CanGiveInformation(otherPlayer, Suite.White).Should().BeTrue();
@@ -21,7 +25,11 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanNotGiveInformationForNonExistingSuite()
 		{
-			var player = playerBuilder.Build();
+			var player = new PlayerBuilder().Build();
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player.CanGiveInformation(otherPlayer, Suite.Red).Should().BeFalse();
@@ -30,7 +38,7 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanGiveInformationForPartiallyInformedSuite()
 		{
-			var player = playerBuilder.Build();
+			var player = new PlayerBuilder().Build();
 
 			var otherPlayerCards = new List<Card>
 			{
@@ -42,8 +50,11 @@ namespace HanabiSolver.Library.Tests.Game
 				[otherPlayerCards[0]] = new Information { IsSuiteKnown = true },
 				[otherPlayerCards[1]] = new Information { IsSuiteKnown = false },
 			};
-			otherPlayerBuilder.Cards = otherPlayerCards;
-			otherPlayerBuilder.InformationBuilder = card => otherPlayerInformation[card];
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+				InformationBuilder = card => otherPlayerInformation[card],
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player.CanGiveInformation(otherPlayer, Suite.White).Should().BeTrue();
@@ -52,15 +63,18 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanNotGiveInformationForFullyInformedSuite()
 		{
-			var player = playerBuilder.Build();
+			var player = new PlayerBuilder().Build();
 
 			var otherPlayerCards = new List<Card>
 			{
 				new Card(Suite.White, Number.One),
 				new Card(Suite.White, Number.Two),
 			};
-			otherPlayerBuilder.Cards = otherPlayerCards;
-			otherPlayerBuilder.InformationBuilder = card => new Information { IsSuiteKnown = true };
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+				InformationBuilder = card => new Information { IsSuiteKnown = true },
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player.CanGiveInformation(otherPlayer, Suite.White).Should().BeFalse();
@@ -69,9 +83,15 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanNotGiveInformationForSuiteWithNoInformationTokens()
 		{
-			playerBuilder.TableBuilder.InformationTokens = TableBuilder.BuildEmptyTokens();
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					InformationTokens = TableBuilder.BuildEmptyTokens(),
+				},
+			};
 			var player = playerBuilder.Build();
-			var otherPlayer = otherPlayerBuilder.Build();
+			var otherPlayer = new PlayerBuilder().Build();
 
 			player.CanGiveInformation(otherPlayer, Suite.White).Should().BeFalse();
 		}
@@ -79,7 +99,11 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanGiveInformationForExistingNumber()
 		{
-			var player = playerBuilder.Build();
+			var player = new PlayerBuilder().Build();
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player.CanGiveInformation(otherPlayer, Number.One).Should().BeTrue();
@@ -88,7 +112,11 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanNotGiveInformationForNonExistingNumber()
 		{
-			var player = playerBuilder.Build();
+			var player = new PlayerBuilder().Build();
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player.CanGiveInformation(otherPlayer, Number.Five).Should().BeFalse();
@@ -97,7 +125,7 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanGiveInformationForPartiallyInformedNumber()
 		{
-			var player = playerBuilder.Build();
+			var player = new PlayerBuilder().Build();
 
 			var otherPlayerCards = new List<Card>
 			{
@@ -109,8 +137,11 @@ namespace HanabiSolver.Library.Tests.Game
 				[otherPlayerCards[0]] = new Information { IsSuiteKnown = true },
 				[otherPlayerCards[1]] = new Information { IsSuiteKnown = false },
 			};
-			otherPlayerBuilder.Cards = otherPlayerCards;
-			otherPlayerBuilder.InformationBuilder = card => otherPlayerInformation[card];
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+				InformationBuilder = card => otherPlayerInformation[card],
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player.CanGiveInformation(otherPlayer, Number.One).Should().BeTrue();
@@ -119,15 +150,18 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanNotGiveInformationForFullyInformedNumber()
 		{
-			var player = playerBuilder.Build();
+			var player = new PlayerBuilder().Build();
 
 			var otherPlayerCards = new List<Card>
 			{
 				new Card(Suite.White, Number.One),
 				new Card(Suite.Yellow, Number.One),
 			};
-			otherPlayerBuilder.Cards = otherPlayerCards;
-			otherPlayerBuilder.InformationBuilder = card => new Information { IsNumberKnown = true };
+			var otherPlayerBuilder = new PlayerBuilder
+			{
+				Cards = otherPlayerCards,
+				InformationBuilder = card => new Information { IsNumberKnown = true },
+			};
 			var otherPlayer = otherPlayerBuilder.Build();
 
 			player.CanGiveInformation(otherPlayer, Number.One).Should().BeFalse();
@@ -136,9 +170,15 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanNotGiveInformationForNumberWithNoInformationTokens()
 		{
-			playerBuilder.TableBuilder.InformationTokens = TableBuilder.BuildEmptyTokens();
+			var playerBuilder = new PlayerBuilder
+			{
+				TableBuilder = new TableBuilder
+				{
+					InformationTokens = TableBuilder.BuildEmptyTokens(),
+				},
+			};
 			var player = playerBuilder.Build();
-			var otherPlayer = otherPlayerBuilder.Build();
+			var otherPlayer = new PlayerBuilder().Build();
 
 			player.CanGiveInformation(otherPlayer, Number.One).Should().BeFalse();
 		}
