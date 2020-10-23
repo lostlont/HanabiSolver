@@ -3,6 +3,7 @@ using HanabiSolver.Library.Game;
 using HanabiSolver.Library.Tests.Builders;
 using Moq;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace HanabiSolver.Library.Tests.Game
@@ -13,27 +14,29 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanGiveInformationForExistingSuite()
 		{
-			var player = new PlayerBuilder().Build();
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
+			const Suite ownedSuite = Suite.White;
 
-			player.CanGiveInformation(otherPlayer, Suite.White).Should().BeTrue();
+			var player = new PlayerBuilder().Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
+			otherPlayer
+				.Setup(p => p.InformationAffectedCards(ownedSuite))
+				.Returns(new List<Card> { new Card(ownedSuite, Number.One) });
+
+			player.CanGiveInformation(otherPlayer.Object, ownedSuite).Should().BeTrue();
 		}
 
 		[Fact]
 		public void CanNotGiveInformationForNonExistingSuite()
 		{
-			var player = new PlayerBuilder().Build();
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
+			const Suite nonOwnedSuite = Suite.Red;
 
-			player.CanGiveInformation(otherPlayer, Suite.Red).Should().BeFalse();
+			var player = new PlayerBuilder().Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
+			otherPlayer
+				.Setup(p => p.InformationAffectedCards(nonOwnedSuite))
+				.Returns(Enumerable.Empty<Card>());
+
+			player.CanGiveInformation(otherPlayer.Object, nonOwnedSuite).Should().BeFalse();
 		}
 
 		[Fact]
@@ -100,27 +103,29 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanGiveInformationForExistingNumber()
 		{
-			var player = new PlayerBuilder().Build();
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
+			const Number ownedNumber = Number.One;
 
-			player.CanGiveInformation(otherPlayer, Number.One).Should().BeTrue();
+			var player = new PlayerBuilder().Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
+			otherPlayer
+				.Setup(p => p.InformationAffectedCards(ownedNumber))
+				.Returns(new List<Card> { new Card(Suite.White, ownedNumber) });
+
+			player.CanGiveInformation(otherPlayer.Object, ownedNumber).Should().BeTrue();
 		}
 
 		[Fact]
 		public void CanNotGiveInformationForNonExistingNumber()
 		{
-			var player = new PlayerBuilder().Build();
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
+			const Number nonOwnedNumber = Number.Five;
 
-			player.CanGiveInformation(otherPlayer, Number.Five).Should().BeFalse();
+			var player = new PlayerBuilder().Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
+			otherPlayer
+				.Setup(p => p.InformationAffectedCards(nonOwnedNumber))
+				.Returns(Enumerable.Empty<Card>());
+
+			player.CanGiveInformation(otherPlayer.Object, nonOwnedNumber).Should().BeFalse();
 		}
 
 		[Fact]

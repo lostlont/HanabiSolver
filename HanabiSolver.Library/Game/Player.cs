@@ -5,7 +5,13 @@ using System.Linq;
 
 namespace HanabiSolver.Library.Game
 {
-	public class Player
+	public interface IPlayer
+	{
+		IEnumerable<Card> InformationAffectedCards(Suite suite);
+		IEnumerable<Card> InformationAffectedCards(Number number);
+	}
+
+	public class Player : IPlayer
 	{
 		private readonly List<Card> cards;
 		private readonly Dictionary<Card, Information> information = new Dictionary<Card, Information>();
@@ -71,13 +77,13 @@ namespace HanabiSolver.Library.Game
 				information.IsNumberKnown = true;
 		}
 
-		public bool CanGiveInformation(Player otherPlayer, Suite suite)
+		public bool CanGiveInformation(IPlayer otherPlayer, Suite suite)
 		{
 			return (Table.InformationTokens.Amount > 0)
 				&& otherPlayer.InformationAffectedCards(suite).Any();
 		}
 
-		public bool CanGiveInformation(Player otherPlayer, Number number)
+		public bool CanGiveInformation(IPlayer otherPlayer, Number number)
 		{
 			return (Table.InformationTokens.Amount > 0)
 				&& otherPlayer.InformationAffectedCards(number).Any();
