@@ -94,7 +94,7 @@ namespace HanabiSolver.Library.Tests.Game
 		{
 			var informationTokens = new Mock<ITokens>(MockBehavior.Strict);
 			informationTokens
-				.Setup(i => i.Amount)
+				.Setup(t => t.Amount)
 				.Returns(0);
 			var playerBuilder = new PlayerBuilder
 			{
@@ -194,7 +194,7 @@ namespace HanabiSolver.Library.Tests.Game
 		{
 			var informationTokens = new Mock<ITokens>(MockBehavior.Strict);
 			informationTokens
-				.Setup(i => i.Amount)
+				.Setup(t => t.Amount)
 				.Returns(0);
 			var playerBuilder = new PlayerBuilder
 			{

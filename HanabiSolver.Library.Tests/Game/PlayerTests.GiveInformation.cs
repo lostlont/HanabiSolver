@@ -4,28 +4,23 @@ using HanabiSolver.Library.Tests.Builders;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
 namespace HanabiSolver.Library.Tests.Game
 {
 	public partial class PlayerTests
 	{
-		private readonly IReadOnlyList<Card> otherPlayerCards = new List<Card>
-		{
-			new Card(Suite.White, Number.One),
-			new Card(Suite.Yellow, Number.Two),
-			new Card(Suite.Green, Number.Three),
-			new Card(Suite.Yellow, Number.One),
-		};
-
 		[Fact]
 		public void GiveInformationWithSuiteUsesInformationToken()
 		{
-			var informationTokens = new Mock<ITokens>();
+			const Suite suite = Suite.White;
+			var ownedCard = new Card(suite, Number.One);
+			var informationTokens = new Mock<ITokens>(MockBehavior.Strict);
 			informationTokens
 				.Setup(t => t.Amount)
 				.Returns(1);
+			informationTokens
+				.Setup(t => t.Use());
 			var playerBuilder = new PlayerBuilder
 			{
 				TableBuilder = new TableBuilder
@@ -34,13 +29,15 @@ namespace HanabiSolver.Library.Tests.Game
 				},
 			};
 			var player = playerBuilder.Build();
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
+			otherPlayer
+				.Setup(p => p.Cards)
+				.Returns(new List<Card> { ownedCard });
+			otherPlayer
+				.Setup(p => p.Information[ownedCard])
+				.Returns(new Information());
 
-			player.GiveInformation(otherPlayer, Suite.White);
+			player.GiveInformation(otherPlayer.Object, suite);
 
 			informationTokens.Verify(t => t.Use(), Times.Once);
 		}
@@ -48,8 +45,7 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void GiveInformationWithSuiteThrowsForNoInformationToken()
 		{
-			// TODO Strict mode?
-			var informationTokens = new Mock<ITokens>();
+			var informationTokens = new Mock<ITokens>(MockBehavior.Strict);
 			informationTokens
 				.Setup(t => t.Amount)
 				.Returns(0);
@@ -61,14 +57,10 @@ namespace HanabiSolver.Library.Tests.Game
 				},
 			};
 			var player = playerBuilder.Build();
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
 
 			player
-				.Invoking(p => p.GiveInformation(otherPlayer, Suite.White))
+				.Invoking(p => p.GiveInformation(otherPlayer.Object, Suite.White))
 				.Should()
 				.Throw<InvalidOperationException>();
 		}
@@ -77,14 +69,13 @@ namespace HanabiSolver.Library.Tests.Game
 		public void GiveInformationWithSuiteThrowsForNoSuchSuite()
 		{
 			var player = new PlayerBuilder().Build();
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
+			otherPlayer
+				.Setup(p => p.Cards)
+				.Returns(new List<Card>());
 
 			player
-				.Invoking(p => p.GiveInformation(otherPlayer, Suite.Red))
+				.Invoking(p => p.GiveInformation(otherPlayer.Object, Suite.Red))
 				.Should()
 				.Throw<InvalidOperationException>();
 		}
@@ -92,10 +83,13 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void GiveInformationWithSuiteSetsSuiteKnownOnCardsInSameSuite()
 		{
-			var informationTokens = new Mock<ITokens>();
+			var ownedCard = new Card(Suite.White, Number.One);
+			var informationTokens = new Mock<ITokens>(MockBehavior.Strict);
 			informationTokens
 				.Setup(t => t.Amount)
 				.Returns(1);
+			informationTokens
+				.Setup(t => t.Use());
 			var playerBuilder = new PlayerBuilder
 			{
 				TableBuilder = new TableBuilder
@@ -104,26 +98,31 @@ namespace HanabiSolver.Library.Tests.Game
 				},
 			};
 			var player = playerBuilder.Build();
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
+			otherPlayer
+				.Setup(p => p.Cards)
+				.Returns(new List<Card> { ownedCard });
+			var information = new Information();
+			otherPlayer
+				.Setup(p => p.Information[ownedCard])
+				.Returns(information);
 
-			var card = otherPlayer.Cards.First();
+			player.GiveInformation(otherPlayer.Object, ownedCard.Suite);
 
-			player.GiveInformation(otherPlayer, card.Suite);
-
-			otherPlayer.Information[card].IsSuiteKnown.Should().BeTrue();
+			information.IsSuiteKnown.Should().BeTrue();
 		}
 
 		[Fact]
 		public void GiveInformationWithNumberUsesInformationToken()
 		{
-			var informationTokens = new Mock<ITokens>();
+			const Number number = Number.One;
+			var ownedCard = new Card(Suite.White, number);
+			var informationTokens = new Mock<ITokens>(MockBehavior.Strict);
 			informationTokens
 				.Setup(t => t.Amount)
 				.Returns(1);
+			informationTokens
+				.Setup(t => t.Use());
 			var playerBuilder = new PlayerBuilder
 			{
 				TableBuilder = new TableBuilder
@@ -132,13 +131,15 @@ namespace HanabiSolver.Library.Tests.Game
 				},
 			};
 			var player = playerBuilder.Build();
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
+			otherPlayer
+				.Setup(p => p.Cards)
+				.Returns(new List<Card> { ownedCard });
+			otherPlayer
+				.Setup(p => p.Information[ownedCard])
+				.Returns(new Information());
 
-			player.GiveInformation(otherPlayer, Number.One);
+			player.GiveInformation(otherPlayer.Object, number);
 
 			informationTokens.Verify(t => t.Use(), Times.Once);
 		}
@@ -146,7 +147,7 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void GiveInformationWithNumberThrowsForNoInformationToken()
 		{
-			var informationTokens = new Mock<ITokens>();
+			var informationTokens = new Mock<ITokens>(MockBehavior.Strict);
 			informationTokens
 				.Setup(t => t.Amount)
 				.Returns(0);
@@ -158,14 +159,10 @@ namespace HanabiSolver.Library.Tests.Game
 				},
 			};
 			var player = playerBuilder.Build();
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
 
 			player
-				.Invoking(p => p.GiveInformation(otherPlayer, Number.One))
+				.Invoking(p => p.GiveInformation(otherPlayer.Object, Number.One))
 				.Should()
 				.Throw<InvalidOperationException>();
 		}
@@ -174,14 +171,13 @@ namespace HanabiSolver.Library.Tests.Game
 		public void GiveInformationWithNumberThrowsForNoSuchNumber()
 		{
 			var player = new PlayerBuilder().Build();
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
+			otherPlayer
+				.Setup(p => p.Cards)
+				.Returns(new List<Card>());
 
 			player
-				.Invoking(p => p.GiveInformation(otherPlayer, Number.Five))
+				.Invoking(p => p.GiveInformation(otherPlayer.Object, Number.Five))
 				.Should()
 				.Throw<InvalidOperationException>();
 		}
@@ -189,10 +185,13 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void GiveInformationWithNumberSetsNumberKnownOnCardsWithSameNumber()
 		{
-			var informationTokens = new Mock<ITokens>();
+			var ownedCard = new Card(Suite.White, Number.One);
+			var informationTokens = new Mock<ITokens>(MockBehavior.Strict);
 			informationTokens
 				.Setup(t => t.Amount)
 				.Returns(1);
+			informationTokens
+				.Setup(t => t.Use());
 			var playerBuilder = new PlayerBuilder
 			{
 				TableBuilder = new TableBuilder
@@ -201,17 +200,18 @@ namespace HanabiSolver.Library.Tests.Game
 				},
 			};
 			var player = playerBuilder.Build();
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
+			otherPlayer
+				.Setup(p => p.Cards)
+				.Returns(new List<Card> { ownedCard });
+			var information = new Information();
+			otherPlayer
+				.Setup(p => p.Information[ownedCard])
+				.Returns(information);
 
-			var card = otherPlayer.Cards.First();
+			player.GiveInformation(otherPlayer.Object, ownedCard.Number);
 
-			player.GiveInformation(otherPlayer, card.Number);
-
-			otherPlayer.Information[card].IsNumberKnown.Should().BeTrue();
+			information.IsNumberKnown.Should().BeTrue();
 		}
 	}
 }

@@ -47,7 +47,7 @@ namespace HanabiSolver.Library.Game
 			Table.InformationTokens.Replenish();
 		}
 
-		public void GiveInformation(Player otherPlayer, Suite suite)
+		public void GiveInformation(IPlayer otherPlayer, Suite suite)
 		{
 			if (Table.InformationTokens.Amount <= 0)
 				throw new InvalidOperationException();
@@ -62,7 +62,7 @@ namespace HanabiSolver.Library.Game
 				information.IsSuiteKnown = true;
 		}
 
-		public void GiveInformation(Player otherPlayer, Number number)
+		public void GiveInformation(IPlayer otherPlayer, Number number)
 		{
 			if (Table.InformationTokens.Amount <= 0)
 				throw new InvalidOperationException();
