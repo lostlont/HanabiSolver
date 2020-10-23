@@ -45,6 +45,9 @@ namespace HanabiSolver.Library.Tests.Builders
 		{
 			var tokens = new Mock<ITokens>();
 			tokens
+				.Setup(t => t.MaxAmount)
+				.Returns(3);
+			tokens
 				.Setup(t => t.Amount)
 				.Returns(0);
 

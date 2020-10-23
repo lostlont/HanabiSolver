@@ -4,6 +4,7 @@ namespace HanabiSolver.Library.Game
 {
 	public interface ITokens
 	{
+		int MaxAmount { get; }
 		int Amount { get; }
 
 		void Use();

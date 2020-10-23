@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using HanabiSolver.Library.Game;
 using HanabiSolver.Library.Tests.Builders;
+using Moq;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -9,43 +10,40 @@ namespace HanabiSolver.Library.Tests.Game
 {
 	public partial class GameStateTests
 	{
-		// TODO Create a GameStateBuilder and get rid of the parts.
-		private readonly Table table;
-		private readonly IReadOnlyList<Player> playerList;
+		private readonly Table someTable;
+		private readonly IReadOnlyList<IPlayer> somePlayers;
 
 		public GameStateTests()
 		{
-			table = new TableBuilder().Build();
-			playerList = new List<Player>
-			{
-				new Player(Enumerable.Empty<Card>(), table),
-				new Player(Enumerable.Empty<Card>(), table),
-				new Player(Enumerable.Empty<Card>(), table),
-			};
+			someTable = new TableBuilder().Build();
+			somePlayers = Enumerable
+				.Range(0, 3)
+				.Select(_ => new Mock<IPlayer>().Object)
+				.ToList();
 		}
 
 		[Fact]
 		public void ConstructorSetsPlayers()
 		{
-			var gameState = new GameState(table, playerList);
+			var gameState = new GameState(someTable, somePlayers);
 
-			gameState.Players.Should().Equal(playerList);
+			gameState.Players.Should().Equal(somePlayers);
 		}
 
 		[Fact]
 		public void ConstructorSetsCurrentPlayerToFirstPlayer()
 		{
-			var players = new GameState(table, playerList);
+			var players = new GameState(someTable, somePlayers);
 
-			players.CurrentPlayer.Should().Be(playerList.First());
+			players.CurrentPlayer.Should().Be(somePlayers.First());
 		}
 
 		[Fact]
 		public void ConstructorSetsCurrentPlayerToGivenPlayer()
 		{
-			var players = new GameState(table, playerList, playerList[1]);
+			var players = new GameState(someTable, somePlayers, somePlayers[1]);
 
-			players.CurrentPlayer.Should().Be(playerList[1]);
+			players.CurrentPlayer.Should().Be(somePlayers[1]);
 		}
 	}
 }
