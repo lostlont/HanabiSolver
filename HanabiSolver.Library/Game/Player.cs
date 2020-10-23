@@ -7,8 +7,8 @@ namespace HanabiSolver.Library.Game
 {
 	public interface IPlayer
 	{
-		IEnumerable<Card> InformationAffectedCards(Suite suite);
-		IEnumerable<Card> InformationAffectedCards(Number number);
+		IReadOnlyList<Card> Cards { get; }
+		IReadOnlyDictionary<Card, Information> Information { get; }
 	}
 
 	public class Player : IPlayer
@@ -52,7 +52,7 @@ namespace HanabiSolver.Library.Game
 			if (Table.InformationTokens.Amount <= 0)
 				throw new InvalidOperationException();
 
-			var informedCards = otherPlayer.InformationAffectedCards(suite);
+			var informedCards = InformationAffectedCards(otherPlayer, suite);
 
 			if (informedCards.None())
 				throw new InvalidOperationException();
@@ -67,7 +67,7 @@ namespace HanabiSolver.Library.Game
 			if (Table.InformationTokens.Amount <= 0)
 				throw new InvalidOperationException();
 
-			var informedCards = otherPlayer.InformationAffectedCards(number);
+			var informedCards = InformationAffectedCards(otherPlayer, number);
 
 			if (informedCards.None())
 				throw new InvalidOperationException();
@@ -80,27 +80,27 @@ namespace HanabiSolver.Library.Game
 		public bool CanGiveInformation(IPlayer otherPlayer, Suite suite)
 		{
 			return (Table.InformationTokens.Amount > 0)
-				&& otherPlayer.InformationAffectedCards(suite).Any();
+				&& InformationAffectedCards(otherPlayer, suite).Any();
 		}
 
 		public bool CanGiveInformation(IPlayer otherPlayer, Number number)
 		{
 			return (Table.InformationTokens.Amount > 0)
-				&& otherPlayer.InformationAffectedCards(number).Any();
+				&& InformationAffectedCards(otherPlayer, number).Any();
 		}
 
-		public IEnumerable<Card> InformationAffectedCards(Suite suite)
+		private IEnumerable<Card> InformationAffectedCards(IPlayer otherPlayer, Suite suite)
 		{
-			return Cards
+			return otherPlayer.Cards
 				.Where(c => c.Suite == suite)
-				.Where(c => Information[c].IsSuiteKnown == false);
+				.Where(c => otherPlayer.Information[c].IsSuiteKnown == false);
 		}
 
-		public IEnumerable<Card> InformationAffectedCards(Number number)
+		private IEnumerable<Card> InformationAffectedCards(IPlayer otherPlayer, Number number)
 		{
-			return Cards
+			return otherPlayer.Cards
 				.Where(c => c.Number == number)
-				.Where(c => Information[c].IsNumberKnown == false);
+				.Where(c => otherPlayer.Information[c].IsNumberKnown == false);
 		}
 
 		public void Play(Card card)

@@ -15,12 +15,16 @@ namespace HanabiSolver.Library.Tests.Game
 		public void CanGiveInformationForExistingSuite()
 		{
 			const Suite ownedSuite = Suite.White;
+			var ownedCard = new Card(ownedSuite, Number.One);
 
 			var player = new PlayerBuilder().Build();
 			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
 			otherPlayer
-				.Setup(p => p.InformationAffectedCards(ownedSuite))
-				.Returns(new List<Card> { new Card(ownedSuite, Number.One) });
+				.Setup(p => p.Cards)
+				.Returns(new List<Card> { ownedCard });
+			otherPlayer
+				.Setup(p => p.Information[ownedCard])
+				.Returns(new Information());
 
 			player.CanGiveInformation(otherPlayer.Object, ownedSuite).Should().BeTrue();
 		}
@@ -33,8 +37,8 @@ namespace HanabiSolver.Library.Tests.Game
 			var player = new PlayerBuilder().Build();
 			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
 			otherPlayer
-				.Setup(p => p.InformationAffectedCards(nonOwnedSuite))
-				.Returns(Enumerable.Empty<Card>());
+				.Setup(p => p.Cards)
+				.Returns(new List<Card>());
 
 			player.CanGiveInformation(otherPlayer.Object, nonOwnedSuite).Should().BeFalse();
 		}
@@ -104,12 +108,16 @@ namespace HanabiSolver.Library.Tests.Game
 		public void CanGiveInformationForExistingNumber()
 		{
 			const Number ownedNumber = Number.One;
+			var ownedCard = new Card(Suite.White, ownedNumber);
 
 			var player = new PlayerBuilder().Build();
 			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
 			otherPlayer
-				.Setup(p => p.InformationAffectedCards(ownedNumber))
-				.Returns(new List<Card> { new Card(Suite.White, ownedNumber) });
+				.Setup(p => p.Cards)
+				.Returns(new List<Card> { ownedCard });
+			otherPlayer
+				.Setup(p => p.Information[ownedCard])
+				.Returns(new Information());
 
 			player.CanGiveInformation(otherPlayer.Object, ownedNumber).Should().BeTrue();
 		}
@@ -122,8 +130,8 @@ namespace HanabiSolver.Library.Tests.Game
 			var player = new PlayerBuilder().Build();
 			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
 			otherPlayer
-				.Setup(p => p.InformationAffectedCards(nonOwnedNumber))
-				.Returns(Enumerable.Empty<Card>());
+				.Setup(p => p.Cards)
+				.Returns(new List<Card>());
 
 			player.CanGiveInformation(otherPlayer.Object, nonOwnedNumber).Should().BeFalse();
 		}
