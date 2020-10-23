@@ -19,14 +19,24 @@ namespace HanabiSolver.Library.Game
 
 		public Table Table { get; }
 		public IReadOnlyList<IPlayer> Players { get; }
-		public IPlayer CurrentPlayer { get; }
+		public IPlayer CurrentPlayer { get; private set; }
+
+		public void EndTurn()
+		{
+			var nextPlayer = Players
+				.SkipWhile(p => p != CurrentPlayer)
+				.Skip(1)
+				.FirstOrDefault();
+			CurrentPlayer = nextPlayer ?? Players.First();
+		}
+
 		public bool IsEnded
 		{
 			get
 			{
 				return
 					(Table.FuseTokens.Amount >= Table.FuseTokens.MaxAmount) ||
-					(Table.PlayedCards.Values.All(pile => pile.Top?.Number == Number.Five));
+					Table.PlayedCards.Values.All(pile => pile.Top?.Number == Number.Five);
 			}
 		}
 	}
