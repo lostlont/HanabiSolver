@@ -3,14 +3,12 @@ using HanabiSolver.Library.Game;
 using HanabiSolver.Library.Tests.Builders;
 using Moq;
 using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 
 namespace HanabiSolver.Library.Tests.Game
 {
 	public partial class PlayerTests
 	{
-		// TODO Instead of otherPlayer a mock should be used!
 		[Fact]
 		public void CanGiveInformationForExistingSuite()
 		{
@@ -46,62 +44,69 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanGiveInformationForPartiallyInformedSuite()
 		{
+			const Suite suite = Suite.White;
+			var informedCard = new Card(suite, Number.One);
+			var nonInformedCard = new Card(suite, Number.Two);
+			
 			var player = new PlayerBuilder().Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
+			otherPlayer
+				.Setup(p => p.Cards)
+				.Returns(new List<Card>
+				{
+					informedCard,
+					nonInformedCard,
+				});
+			otherPlayer
+				.Setup(p => p.Information)
+				.Returns(new Dictionary<Card, Information>
+				{
+					[informedCard] = new Information { IsSuiteKnown = true },
+					[nonInformedCard] = new Information { IsSuiteKnown = false },
+				});
 
-			var otherPlayerCards = new List<Card>
-			{
-				new Card(Suite.White, Number.One),
-				new Card(Suite.White, Number.Two),
-			};
-			var otherPlayerInformation = new Dictionary<Card, Information>
-			{
-				[otherPlayerCards[0]] = new Information { IsSuiteKnown = true },
-				[otherPlayerCards[1]] = new Information { IsSuiteKnown = false },
-			};
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-				InformationBuilder = card => otherPlayerInformation[card],
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
-
-			player.CanGiveInformation(otherPlayer, Suite.White).Should().BeTrue();
+			player.CanGiveInformation(otherPlayer.Object, suite).Should().BeTrue();
 		}
 
 		[Fact]
 		public void CanNotGiveInformationForFullyInformedSuite()
 		{
+			const Suite suite = Suite.White;
+
 			var player = new PlayerBuilder().Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
+			otherPlayer
+				.Setup(p => p.Cards)
+				.Returns(new List<Card>
+				{
+					new Card(suite, Number.One),
+					new Card(suite, Number.Two),
+				});
+			otherPlayer
+				.Setup(p => p.Information[It.IsAny<Card>()])
+				.Returns(new Information { IsSuiteKnown = true });
 
-			var otherPlayerCards = new List<Card>
-			{
-				new Card(Suite.White, Number.One),
-				new Card(Suite.White, Number.Two),
-			};
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-				InformationBuilder = card => new Information { IsSuiteKnown = true },
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
-
-			player.CanGiveInformation(otherPlayer, Suite.White).Should().BeFalse();
+			player.CanGiveInformation(otherPlayer.Object, suite).Should().BeFalse();
 		}
 
 		[Fact]
 		public void CanNotGiveInformationForSuiteWithNoInformationTokens()
 		{
+			var informationTokens = new Mock<ITokens>(MockBehavior.Strict);
+			informationTokens
+				.Setup(i => i.Amount)
+				.Returns(0);
 			var playerBuilder = new PlayerBuilder
 			{
 				TableBuilder = new TableBuilder
 				{
-					InformationTokens = new Mock<ITokens>().Object,
+					InformationTokens = informationTokens.Object,
 				},
 			};
 			var player = playerBuilder.Build();
-			var otherPlayer = new PlayerBuilder().Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
 
-			player.CanGiveInformation(otherPlayer, Suite.White).Should().BeFalse();
+			player.CanGiveInformation(otherPlayer.Object, Suite.White).Should().BeFalse();
 		}
 
 		[Fact]
@@ -139,62 +144,69 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void CanGiveInformationForPartiallyInformedNumber()
 		{
+			const Number number = Number.One;
+			var informedCard = new Card(Suite.White, number);
+			var nonInformedCard = new Card(Suite.Yellow, number);
+			
 			var player = new PlayerBuilder().Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
+			otherPlayer
+				.Setup(p => p.Cards)
+				.Returns(new List<Card>
+				{
+					informedCard,
+					nonInformedCard,
+				});
+			otherPlayer
+				.Setup(p => p.Information)
+				.Returns(new Dictionary<Card, Information>
+				{
+					[informedCard] = new Information { IsNumberKnown = true },
+					[nonInformedCard] = new Information { IsNumberKnown = false },
+				});
 
-			var otherPlayerCards = new List<Card>
-			{
-				new Card(Suite.White, Number.One),
-				new Card(Suite.Yellow, Number.One),
-			};
-			var otherPlayerInformation = new Dictionary<Card, Information>
-			{
-				[otherPlayerCards[0]] = new Information { IsSuiteKnown = true },
-				[otherPlayerCards[1]] = new Information { IsSuiteKnown = false },
-			};
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-				InformationBuilder = card => otherPlayerInformation[card],
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
-
-			player.CanGiveInformation(otherPlayer, Number.One).Should().BeTrue();
+			player.CanGiveInformation(otherPlayer.Object, number).Should().BeTrue();
 		}
 
 		[Fact]
 		public void CanNotGiveInformationForFullyInformedNumber()
 		{
+			const Number number = Number.One;
+
 			var player = new PlayerBuilder().Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
+			otherPlayer
+				.Setup(p => p.Cards)
+				.Returns(new List<Card>
+				{
+					new Card(Suite.White, number),
+					new Card(Suite.Yellow, number),
+				});
+			otherPlayer
+				.Setup(p => p.Information[It.IsAny<Card>()])
+				.Returns(new Information { IsNumberKnown = true });
 
-			var otherPlayerCards = new List<Card>
-			{
-				new Card(Suite.White, Number.One),
-				new Card(Suite.Yellow, Number.One),
-			};
-			var otherPlayerBuilder = new PlayerBuilder
-			{
-				Cards = otherPlayerCards,
-				InformationBuilder = card => new Information { IsNumberKnown = true },
-			};
-			var otherPlayer = otherPlayerBuilder.Build();
-
-			player.CanGiveInformation(otherPlayer, Number.One).Should().BeFalse();
+			player.CanGiveInformation(otherPlayer.Object, number).Should().BeFalse();
 		}
 
 		[Fact]
 		public void CanNotGiveInformationForNumberWithNoInformationTokens()
 		{
+			var informationTokens = new Mock<ITokens>(MockBehavior.Strict);
+			informationTokens
+				.Setup(i => i.Amount)
+				.Returns(0);
 			var playerBuilder = new PlayerBuilder
 			{
 				TableBuilder = new TableBuilder
 				{
-					InformationTokens = new Mock<ITokens>().Object,
+					InformationTokens = informationTokens.Object,
 				},
 			};
 			var player = playerBuilder.Build();
-			var otherPlayer = new PlayerBuilder().Build();
+			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
 
-			player.CanGiveInformation(otherPlayer, Number.One).Should().BeFalse();
+			player.CanGiveInformation(otherPlayer.Object, Number.One).Should().BeFalse();
 		}
 	}
 }
