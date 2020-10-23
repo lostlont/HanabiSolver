@@ -8,9 +8,8 @@ namespace HanabiSolver.Library.Game
 		public IPile DiscardPile { get; }
 		public ITokens InformationTokens { get; }
 		public ITokens FuseTokens { get; }
-		public Dictionary<Suite, IPile> PlayedCards { get; }
+		public IReadOnlyDictionary<Suite, IPile> PlayedCards { get; }
 
-		// TODO Switch to I(ReadOnly)Dictionary?
 		public Table(IDeck deck, IPile discardPile, ITokens informationTokens, ITokens fuseTokens, Dictionary<Suite, IPile> playedCards)
 		{
 			Deck = deck;

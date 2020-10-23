@@ -1,5 +1,4 @@
 ﻿using HanabiSolver.Library.Game;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,8 +8,6 @@ namespace HanabiSolver.Library.Tests.Builders
 	{
 		public IEnumerable<Card> Cards { get; set; }
 		public TableBuilder TableBuilder { get; set; } = new TableBuilder();
-		// TODO Concretize InformationBuilder.
-		public Func<Card, Information> InformationBuilder { get; set; } = card => new Information();
 
 		public PlayerBuilder()
 		{
@@ -26,11 +23,7 @@ namespace HanabiSolver.Library.Tests.Builders
 		{
 			var cards = Cards.ToList();
 			var table = TableBuilder.Build();
-			var information = cards.ToDictionary(
-				card => card,
-				InformationBuilder);
-
-			return new Player(cards, table, information);
+			return new Player(cards, table);
 		}
 	}
 }
