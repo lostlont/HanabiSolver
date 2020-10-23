@@ -37,7 +37,7 @@ namespace HanabiSolver.Library.Tests.Game
 
 			player.Play(cardToPlay);
 
-			playedPile.Verify(p => p.Add(It.Is<Card>(c => c == cardToPlay)), Times.Once);
+			playedPile.Verify(p => p.Add(cardToPlay), Times.Once);
 		}
 
 		[Fact]
@@ -66,7 +66,7 @@ namespace HanabiSolver.Library.Tests.Game
 
 			player.Play(cardToPlay);
 
-			playedPile.Verify(p => p.Add(It.Is<Card>(c => c == cardToPlay)), Times.Once);
+			playedPile.Verify(p => p.Add(cardToPlay), Times.Once);
 		}
 
 		[Theory]
@@ -107,7 +107,7 @@ namespace HanabiSolver.Library.Tests.Game
 
 			playedPile.Verify(p => p.Add(It.IsAny<Card>()), Times.Never);
 			fuseTokens.Verify(t => t.Replenish(), Times.Once);
-			discardPile.Verify(p => p.Add(It.Is<Card>(c => c == cardToPlay)), Times.Once);
+			discardPile.Verify(p => p.Add(cardToPlay), Times.Once);
 		}
 
 		[Fact]
