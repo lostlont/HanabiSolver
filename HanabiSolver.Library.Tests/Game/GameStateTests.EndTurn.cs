@@ -13,20 +13,15 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void EndTurnSetsCurrentPlayerToNextOne()
 		{
-			var deck = new Mock<IDeck>(MockBehavior.Strict);
-			deck
-				.Setup(d => d.Cards)
-				.Returns(new List<Card> { new Card(Suite.White, Number.One) });
-			var tableBuilder = new TableBuilder
+			var players = BuildSomePlayers();
+			var gameState = new GameStateBuilder
 			{
-				Deck = deck.Object,
-			};
-			var table = tableBuilder.Build();
-			var players = Enumerable
-				.Range(0, 3)
-				.Select(_ => new Mock<IPlayer>().Object)
-				.ToList();
-			var gameState = new GameState(table, players);
+				Table = new TableBuilder
+				{
+					Deck = BuildSomeDeck(),
+				}.Build(),
+				Players = players,
+			}.Build();
 
 			gameState.EndTurn();
 
@@ -36,20 +31,16 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void EndTurnSetsCurrentPlayerToFirstOneForLastOne()
 		{
-			var deck = new Mock<IDeck>(MockBehavior.Strict);
-			deck
-				.Setup(d => d.Cards)
-				.Returns(new List<Card> { new Card(Suite.White, Number.One) });
-			var tableBuilder = new TableBuilder
+			var players = BuildSomePlayers();
+			var gameState = new GameStateBuilder
 			{
-				Deck = deck.Object,
-			};
-			var table = tableBuilder.Build();
-			var players = Enumerable
-				.Range(0, 3)
-				.Select(_ => new Mock<IPlayer>().Object)
-				.ToList();
-			var gameState = new GameState(table, players, players.Last());
+				Table = new TableBuilder
+				{
+					Deck = BuildSomeDeck(),
+				}.Build(),
+				Players = players,
+				CurrentPlayer = players.Last(),
+			}.Build();
 
 			gameState.EndTurn();
 
@@ -63,25 +54,47 @@ namespace HanabiSolver.Library.Tests.Game
 		[InlineData(10, 10, true)]
 		public void EndTurnSetsIsEndedForEmptiedDeckAfterOneRound(int playerCount, int turnCount, bool isEnded)
 		{
-			var deck = new Mock<IDeck>(MockBehavior.Strict);
-			deck
-				.Setup(d => d.Cards)
-				.Returns(new List<Card>());
-			var tableBuilder = new TableBuilder
+			var gameState = new GameStateBuilder
 			{
-				Deck = deck.Object,
-			};
-			var table = tableBuilder.Build();
-			var players = Enumerable
-				.Range(0, playerCount)
-				.Select(_ => new Mock<IPlayer>().Object)
-				.ToList();
-			var gameState = new GameState(table, players);
+				Table = new TableBuilder
+				{
+					Deck = BuildEmptyDeck(),
+				}.Build(),
+				Players = BuildSomePlayers(playerCount),
+			}.Build();
 
 			foreach (var turnIndex in Enumerable.Range(0, turnCount))
 				gameState.EndTurn();
 
 			gameState.IsEnded.Should().Be(isEnded);
+		}
+
+		private IDeck BuildSomeDeck()
+		{
+			var deck = new Mock<IDeck>(MockBehavior.Strict);
+			deck
+				.Setup(d => d.Cards)
+				.Returns(new List<Card> { new Card(Suite.White, Number.One) });
+			return deck.Object;
+		}
+
+		private IDeck BuildEmptyDeck()
+		{
+			var deck = new Mock<IDeck>(MockBehavior.Strict);
+			deck
+				.Setup(d => d.Cards)
+				.Returns(new List<Card>());
+			return deck.Object;
+		}
+
+		private List<IPlayer> BuildSomePlayers() => BuildSomePlayers(3);
+
+		private List<IPlayer> BuildSomePlayers(int playerCount)
+		{
+			return Enumerable
+				.Range(0, playerCount)
+				.Select(_ => new Mock<IPlayer>().Object)
+				.ToList();
 		}
 	}
 }

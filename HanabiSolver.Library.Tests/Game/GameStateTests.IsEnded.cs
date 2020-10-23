@@ -10,19 +10,10 @@ namespace HanabiSolver.Library.Tests.Game
 {
 	public partial class GameStateTests
 	{
-		//new Player(new Card(Suite.White, Number.One).AsEnumerable(), table),
-		//new Player(new Card(Suite.Yellow, Number.Two).AsEnumerable(), table),
-		//new Player(new Card(Suite.Green, Number.Three).AsEnumerable(), table),
-
 		[Fact]
 		public void IsNotEndedNormally()
 		{
-			var table = new TableBuilder().Build();
-			var players = Enumerable
-				.Range(0, 3)
-				.Select(_ => new Mock<IPlayer>().Object)
-				.ToList();
-			var gameState = new GameState(table, players);
+			var gameState = new GameStateBuilder().Build();
 
 			gameState.IsEnded.Should().BeFalse();
 		}
@@ -47,16 +38,13 @@ namespace HanabiSolver.Library.Tests.Game
 			fuseTokens
 				.Setup(t => t.Amount)
 				.Returns(tokenAmount);
-			var tableBuilder = new TableBuilder
+			var gameState = new GameStateBuilder
 			{
-				FuseTokens = fuseTokens.Object,
-			};
-			var table = tableBuilder.Build();
-			var players = Enumerable
-				.Range(0, 3)
-				.Select(_ => new Mock<IPlayer>().Object)
-				.ToList();
-			var gameState = new GameState(table, players);
+				Table = new TableBuilder
+				{
+					FuseTokens = fuseTokens.Object,
+				}.Build(),
+			}.Build();
 
 			gameState.IsEnded.Should().Be(isEnded);
 		}
@@ -64,27 +52,16 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void IsEndedWhenAllFivesArePlayed()
 		{
-			static IPile BuildPile(Suite suite)
+			var gameState = new GameStateBuilder
 			{
-				var result = new Mock<IPile>(MockBehavior.Strict);
-				result
-					.Setup(p => p.Top)
-					.Returns(new Card(suite, Number.Five));
-				return result.Object;
-			}
-			var tableBuilder = new TableBuilder
-			{
-				PlayedCards = EnumUtils.Values<Suite>()
-					.ToDictionary(
-						suite => suite,
-						suite => BuildPile(suite)),
-			};
-			var table = tableBuilder.Build();
-			var players = Enumerable
-				.Range(0, 3)
-				.Select(_ => new Mock<IPlayer>().Object)
-				.ToList();
-			var gameState = new GameState(table, players);
+				Table = new TableBuilder
+				{
+					PlayedCards = EnumUtils.Values<Suite>()
+						.ToDictionary(
+							suite => suite,
+							suite => BuildPile(suite)),
+				}.Build(),
+			}.Build();
 
 			gameState.IsEnded.Should().BeTrue();
 		}
@@ -92,29 +69,29 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void IsNotEndedWhenAllButOneFivesArePlayed()
 		{
-			static IPile BuildPile(Suite suite, Number topNumber)
+			var gameState = new GameStateBuilder
 			{
-				var result = new Mock<IPile>(MockBehavior.Strict);
-				result
-					.Setup(p => p.Top)
-					.Returns(new Card(suite, topNumber));
-				return result.Object;
-			}
-			var tableBuilder = new TableBuilder
-			{
-				PlayedCards = EnumUtils.Values<Suite>()
-					.ToDictionary(
-						suite => suite,
-						suite => BuildPile(suite, suite == Suite.White ? Number.Four : Number.Five)),
-			};
-			var table = tableBuilder.Build();
-			var players = Enumerable
-				.Range(0, 3)
-				.Select(_ => new Mock<IPlayer>().Object)
-				.ToList();
-			var gameState = new GameState(table, players);
+				Table = new TableBuilder
+				{
+					PlayedCards = EnumUtils.Values<Suite>()
+						.ToDictionary(
+							suite => suite,
+							suite => BuildPile(suite, suite == Suite.White ? Number.Four : Number.Five)),
+				}.Build(),
+			}.Build();
 
 			gameState.IsEnded.Should().BeFalse();
+		}
+
+		private IPile BuildPile(Suite suite) => BuildPile(suite, Number.Five);
+
+		private IPile BuildPile(Suite suite, Number topNumber)
+		{
+			var result = new Mock<IPile>(MockBehavior.Strict);
+			result
+				.Setup(p => p.Top)
+				.Returns(new Card(suite, topNumber));
+			return result.Object;
 		}
 	}
 }
