@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace HanabiSolver.Library.Game
 {
@@ -19,11 +20,17 @@ namespace HanabiSolver.Library.Game
 					GameState.Table.PlayedCards.Values.All(pile => pile.Top?.Number == Number.Five);
 			}
 		}
-		// TODO Simplify coupling by hiding some of these in GameState?
 
-		public void Play()
+		// TODO Destroy this
+		public void Play() => Play(Enumerable.Empty<ITactics>());
+
+		public void Play(IEnumerable<ITactics> tactics)
 		{
-			GameState.CurrentPlayer = GameState.NextPlayer;
+			while (!IsEnded)
+			{
+				tactics.FirstOrDefault()?.Apply(GameState.CurrentPlayer);
+				GameState.CurrentPlayer = GameState.NextPlayer;
+			}
 		}
 	}
 }
