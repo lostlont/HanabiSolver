@@ -4,12 +4,12 @@ namespace HanabiSolver.Library.Game
 {
 	public class GameManager
 	{
-		public GameManager(IGameState gameState)
+		public GameManager(GameState gameState)
 		{
 			GameState = gameState;
 		}
 
-		public IGameState GameState { get; }
+		public GameState GameState { get; }
 		public bool IsEnded
 		{
 			get

@@ -3,14 +3,7 @@ using System.Linq;
 
 namespace HanabiSolver.Library.Game
 {
-	public interface IGameState
-	{
-		Table Table { get; }
-		IReadOnlyList<IPlayer> Players { get; }
-		IPlayer CurrentPlayer { get; set; }
-	}
-
-	public class GameState : IGameState
+	public class GameState
 	{
 		public GameState(Table table, IReadOnlyList<IPlayer> players)
 			: this(table, players, players.First())
