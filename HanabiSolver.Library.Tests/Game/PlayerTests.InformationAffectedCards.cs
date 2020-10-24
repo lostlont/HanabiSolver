@@ -81,26 +81,6 @@ namespace HanabiSolver.Library.Tests.Game
 		}
 
 		[Fact]
-		public void CanNotGiveInformationForSuiteWithNoInformationTokens()
-		{
-			var informationTokens = new Mock<ITokens>(MockBehavior.Strict);
-			informationTokens
-				.Setup(t => t.Amount)
-				.Returns(0);
-			var playerBuilder = new PlayerBuilder
-			{
-				TableBuilder = new TableBuilder
-				{
-					InformationTokens = informationTokens.Object,
-				},
-			};
-			var player = playerBuilder.Build();
-			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
-
-			player.CanGiveInformation(otherPlayer.Object, Suite.White).Should().BeFalse();
-		}
-
-		[Fact]
 		public void CanGiveInformationForExistingNumber()
 		{
 			const Number ownedNumber = Number.One;
