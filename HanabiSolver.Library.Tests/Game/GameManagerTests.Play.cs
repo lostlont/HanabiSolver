@@ -3,6 +3,7 @@ using HanabiSolver.Library.Game;
 using HanabiSolver.Library.Tests.Builders;
 using HanabiSolver.Library.Utils;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
@@ -11,6 +12,18 @@ namespace HanabiSolver.Library.Tests.Game
 {
 	public partial class GameManagerTests
 	{
+		[Fact]
+		public void PlayWithoutTacticsThrowsException()
+		{
+			var gameState = new GameStateBuilder().Build();
+			var gameManager = new GameManager(gameState);
+
+			gameManager
+				.Invoking(gm => gm.Play(Enumerable.Empty<ITactics>()))
+				.Should()
+				.Throw<InvalidOperationException>();
+		}
+
 		[Theory]
 		[InlineData(0)]
 		[InlineData(1)]
@@ -28,7 +41,8 @@ namespace HanabiSolver.Library.Tests.Game
 			}.Build();
 			var gameManager = new GameManager(gameState);
 
-			gameManager.Play();
+			var tactics = BuildSomeTactics();
+			gameManager.Play(tactics);
 
 			gameManager.IsEnded.Should().BeTrue();
 		}
@@ -56,7 +70,8 @@ namespace HanabiSolver.Library.Tests.Game
 			}.Build();
 			var gameManager = new GameManager(gameState);
 
-			gameManager.Play();
+			var tactics = BuildSomeTactics();
+			gameManager.Play(tactics);
 
 			gameState.CurrentPlayer.Should().Be(players[finishingPlayer]);
 		}
@@ -159,6 +174,16 @@ namespace HanabiSolver.Library.Tests.Game
 				.Range(0, playerCount)
 				.Select(_ => new Mock<IPlayer>().Object)
 				.ToList();
+		}
+
+		private List<ITactics> BuildSomeTactics()
+		{
+			var tactics = new Mock<ITactics>(MockBehavior.Strict);
+			tactics.Setup(t => t.Apply(It.IsAny<IPlayer>()));
+			return new List<ITactics>
+			{
+				tactics.Object,
+			};
 		}
 	}
 }

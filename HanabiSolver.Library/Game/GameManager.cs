@@ -21,14 +21,11 @@ namespace HanabiSolver.Library.Game
 			}
 		}
 
-		// TODO Destroy this
-		public void Play() => Play(Enumerable.Empty<ITactics>());
-
 		public void Play(IEnumerable<ITactics> tactics)
 		{
 			while (!IsEnded)
 			{
-				tactics.FirstOrDefault()?.Apply(GameState.CurrentPlayer);
+				tactics.First().Apply(GameState.CurrentPlayer);
 				GameState.CurrentPlayer = GameState.NextPlayer;
 			}
 		}
