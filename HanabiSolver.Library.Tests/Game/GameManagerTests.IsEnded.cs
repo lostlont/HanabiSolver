@@ -8,14 +8,15 @@ using Xunit;
 
 namespace HanabiSolver.Library.Tests.Game
 {
-	public partial class GameStateTests
+	public partial class GameManagerTests
 	{
 		[Fact]
 		public void IsNotEndedNormally()
 		{
 			var gameState = new GameStateBuilder().Build();
+			var gameManager = new GameManager(gameState);
 
-			gameState.IsEnded.Should().BeFalse();
+			gameManager.IsEnded.Should().BeFalse();
 		}
 
 		[Theory]
@@ -45,8 +46,9 @@ namespace HanabiSolver.Library.Tests.Game
 					FuseTokens = fuseTokens.Object,
 				}.Build(),
 			}.Build();
+			var gameManager = new GameManager(gameState);
 
-			gameState.IsEnded.Should().Be(isEnded);
+			gameManager.IsEnded.Should().Be(isEnded);
 		}
 
 		[Fact]
@@ -62,8 +64,9 @@ namespace HanabiSolver.Library.Tests.Game
 							suite => BuildPile(suite)),
 				}.Build(),
 			}.Build();
+			var gameManager = new GameManager(gameState);
 
-			gameState.IsEnded.Should().BeTrue();
+			gameManager.IsEnded.Should().BeTrue();
 		}
 
 		[Fact]
@@ -79,8 +82,9 @@ namespace HanabiSolver.Library.Tests.Game
 							suite => BuildPile(suite, suite == Suite.White ? Number.Four : Number.Five)),
 				}.Build(),
 			}.Build();
+			var gameManager = new GameManager(gameState);
 
-			gameState.IsEnded.Should().BeFalse();
+			gameManager.IsEnded.Should().BeFalse();
 		}
 
 		private IPile BuildPile(Suite suite) => BuildPile(suite, Number.Five);

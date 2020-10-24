@@ -8,10 +8,10 @@ using Xunit;
 
 namespace HanabiSolver.Library.Tests.Game
 {
-	public partial class GameStateTests
+	public partial class GameManagerTests
 	{
 		[Fact]
-		public void EndTurnSetsCurrentPlayerToNextOne()
+		public void PlaySetsCurrentPlayerToNextOne()
 		{
 			var players = BuildSomePlayers();
 			var gameState = new GameStateBuilder
@@ -22,14 +22,15 @@ namespace HanabiSolver.Library.Tests.Game
 				}.Build(),
 				Players = players,
 			}.Build();
+			var gameManager = new GameManager(gameState);
 
-			gameState.EndTurn();
+			gameManager.Play();
 
 			gameState.CurrentPlayer.Should().Be(players[1]);
 		}
 
 		[Fact]
-		public void EndTurnSetsCurrentPlayerToFirstOneForLastOne()
+		public void PlaySetsCurrentPlayerToFirstOneForLastOne()
 		{
 			var players = BuildSomePlayers();
 			var gameState = new GameStateBuilder
@@ -41,33 +42,14 @@ namespace HanabiSolver.Library.Tests.Game
 				Players = players,
 				CurrentPlayer = players.Last(),
 			}.Build();
+			var gameManager = new GameManager(gameState);
 
-			gameState.EndTurn();
+			gameManager.Play();
 
 			gameState.CurrentPlayer.Should().Be(players.First());
 		}
 
-		[Theory]
-		[InlineData(3, 2, false)]
-		[InlineData(3, 3, true)]
-		[InlineData(10, 9, false)]
-		[InlineData(10, 10, true)]
-		public void EndTurnSetsIsEndedForEmptiedDeckAfterOneRound(int playerCount, int turnCount, bool isEnded)
-		{
-			var gameState = new GameStateBuilder
-			{
-				Table = new TableBuilder
-				{
-					Deck = BuildEmptyDeck(),
-				}.Build(),
-				Players = BuildSomePlayers(playerCount),
-			}.Build();
-
-			foreach (var turnIndex in Enumerable.Range(0, turnCount))
-				gameState.EndTurn();
-
-			gameState.IsEnded.Should().Be(isEnded);
-		}
+		// TODO Tests for simulating with non-finished states.
 
 		private IDeck BuildSomeDeck()
 		{

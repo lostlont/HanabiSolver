@@ -8,7 +8,7 @@ using Xunit;
 
 namespace HanabiSolver.Library.Tests.Game
 {
-	public partial class GameStateTests
+	public class GameStateTests
 	{
 		private readonly Table someTable;
 		private readonly IReadOnlyList<IPlayer> somePlayers;

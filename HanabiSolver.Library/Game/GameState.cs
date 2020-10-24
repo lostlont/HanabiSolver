@@ -1,13 +1,17 @@
-﻿using HanabiSolver.Library.Extensions;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace HanabiSolver.Library.Game
 {
-	public class GameState
+	public interface IGameState
 	{
-		private IPlayer? lastRoundStarter;
+		Table Table { get; }
+		IReadOnlyList<IPlayer> Players { get; }
+		IPlayer CurrentPlayer { get; set; }
+	}
 
+	public class GameState : IGameState
+	{
 		public GameState(Table table, IReadOnlyList<IPlayer> players)
 			: this(table, players, players.First())
 		{
@@ -22,29 +26,6 @@ namespace HanabiSolver.Library.Game
 
 		public Table Table { get; }
 		public IReadOnlyList<IPlayer> Players { get; }
-		public IPlayer CurrentPlayer { get; private set; }
-
-		public void EndTurn()
-		{
-			if ((lastRoundStarter == null) && Table.Deck.Cards.None())
-				lastRoundStarter = CurrentPlayer;
-
-			var nextPlayer = Players
-				.SkipWhile(p => p != CurrentPlayer)
-				.Skip(1)
-				.FirstOrDefault();
-			CurrentPlayer = nextPlayer ?? Players.First();
-		}
-
-		public bool IsEnded
-		{
-			get
-			{
-				return
-					(Table.FuseTokens.Amount >= Table.FuseTokens.MaxAmount) ||
-					Table.PlayedCards.Values.All(pile => pile.Top?.Number == Number.Five) ||
-					(CurrentPlayer == lastRoundStarter);
-			}
-		}
+		public IPlayer CurrentPlayer { get; set; }
 	}
 }
