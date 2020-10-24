@@ -25,7 +25,10 @@ namespace HanabiSolver.Library.Game
 		{
 			while (!IsEnded)
 			{
-				tactics.First().Apply(GameState);
+				tactics
+					.First(t => t.CanApply(GameState))
+					.Apply(GameState);
+
 				GameState.CurrentPlayer = GameState.NextPlayer;
 			}
 		}

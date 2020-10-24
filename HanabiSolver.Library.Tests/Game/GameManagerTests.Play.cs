@@ -95,11 +95,11 @@ namespace HanabiSolver.Library.Tests.Game
 			var gameManager = new GameManager(gameState);
 
 			var tactics = new Mock<ITactics>(MockBehavior.Strict);
-			var applySequence = new MockSequence();
-			foreach (var turnIndex in Enumerable.Range(0, turnsUntilEnd))
-				tactics
-					.InSequence(applySequence)
-					.Setup(p => p.Apply(gameState));
+			tactics
+				.Setup(t => t.CanApply(gameState))
+				.Returns(true);
+			tactics
+				.Setup(t => t.Apply(gameState));
 
 			var tacticsList = new List<ITactics> { tactics.Object };
 			gameManager.Play(tacticsList);
@@ -108,7 +108,39 @@ namespace HanabiSolver.Library.Tests.Game
 				tactics.Verify(t => t.Apply(gameState));
 		}
 
-		// TODO Test multiple tactics, and CanApply
+		[Fact]
+		public void PlayAppliesFirstApplicableTactics()
+		{
+			var players = BuildSomePlayers(3);
+			var gameState = new GameStateBuilder
+			{
+				Table = new TableBuilder
+				{
+					PlayedCards = BuildFinishingPlayedCards(1),
+				}.Build(),
+				Players = players,
+			}.Build();
+			var gameManager = new GameManager(gameState);
+
+			var nonApplicableTactics = new Mock<ITactics>(MockBehavior.Strict);
+			nonApplicableTactics
+				.Setup(t => t.CanApply(gameState))
+				.Returns(false);
+			var applicableTactics = new Mock<ITactics>(MockBehavior.Strict);
+			applicableTactics
+				.Setup(t => t.CanApply(gameState))
+				.Returns(true);
+			applicableTactics
+				.Setup(t => t.Apply(gameState));
+			var tacticsList = new List<ITactics>
+			{
+				nonApplicableTactics.Object,
+				applicableTactics.Object,
+			};
+			gameManager.Play(tacticsList);
+
+			applicableTactics.Verify(t => t.Apply(gameState), Times.Once);
+		}
 
 		private Dictionary<Suite, IPile> BuildFinishingPlayedCards(int turnsUntilFinish)
 		{
@@ -120,8 +152,6 @@ namespace HanabiSolver.Library.Tests.Game
 						? BuildFinishingPile(suite, turnsUntilFinish)
 						: BuildFullPile(suite));
 		}
-
-		private IPile BuildFinishingPile(int turnsUntilFinish) => BuildFinishingPile(Suite.White, turnsUntilFinish);
 
 		private IPile BuildFinishingPile(Suite suite, int turnsUntilFinish)
 		{
@@ -138,24 +168,6 @@ namespace HanabiSolver.Library.Tests.Game
 				.Returns(lastCard);
 
 			return playedCards.Object;
-		}
-
-		private IDeck BuildSomeDeck()
-		{
-			var deck = new Mock<IDeck>(MockBehavior.Strict);
-			deck
-				.Setup(d => d.Cards)
-				.Returns(new List<Card> { new Card(Suite.White, Number.One) });
-			return deck.Object;
-		}
-
-		private IDeck BuildEmptyDeck()
-		{
-			var deck = new Mock<IDeck>(MockBehavior.Strict);
-			deck
-				.Setup(d => d.Cards)
-				.Returns(new List<Card>());
-			return deck.Object;
 		}
 
 		private IPile BuildFullPile(Suite suite)
@@ -180,7 +192,11 @@ namespace HanabiSolver.Library.Tests.Game
 		private List<ITactics> BuildSomeTactics()
 		{
 			var tactics = new Mock<ITactics>(MockBehavior.Strict);
-			tactics.Setup(t => t.Apply(It.IsAny<IGameState>()));
+			tactics
+				.Setup(t => t.CanApply(It.IsAny<IGameState>()))
+				.Returns(true);
+			tactics
+				.Setup(t => t.Apply(It.IsAny<IGameState>()));
 			return new List<ITactics>
 			{
 				tactics.Object,
