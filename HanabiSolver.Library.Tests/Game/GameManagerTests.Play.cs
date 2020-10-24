@@ -81,7 +81,7 @@ namespace HanabiSolver.Library.Tests.Game
 		[InlineData(1)]
 		[InlineData(2)]
 		[InlineData(3)]
-		public void PlayAppliesTacticsForCurrentPlayer(int turnsUntilEnd)
+		public void PlayAppliesTacticsWithGameState(int turnsUntilEnd)
 		{
 			var players = BuildSomePlayers(3);
 			var gameState = new GameStateBuilder
@@ -99,12 +99,13 @@ namespace HanabiSolver.Library.Tests.Game
 			foreach (var turnIndex in Enumerable.Range(0, turnsUntilEnd))
 				tactics
 					.InSequence(applySequence)
-					.Setup(p => p.Apply(players[turnIndex % players.Count]));
+					.Setup(p => p.Apply(gameState));
 
-			gameManager.Play(new List<ITactics> { tactics.Object });
+			var tacticsList = new List<ITactics> { tactics.Object };
+			gameManager.Play(tacticsList);
 
 			foreach (var turnIndex in Enumerable.Range(0, turnsUntilEnd))
-				tactics.Verify(t => t.Apply(players[turnIndex % players.Count]));
+				tactics.Verify(t => t.Apply(gameState));
 		}
 
 		// TODO Test multiple tactics, and CanApply
@@ -179,7 +180,7 @@ namespace HanabiSolver.Library.Tests.Game
 		private List<ITactics> BuildSomeTactics()
 		{
 			var tactics = new Mock<ITactics>(MockBehavior.Strict);
-			tactics.Setup(t => t.Apply(It.IsAny<IPlayer>()));
+			tactics.Setup(t => t.Apply(It.IsAny<IGameState>()));
 			return new List<ITactics>
 			{
 				tactics.Object,

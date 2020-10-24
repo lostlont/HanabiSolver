@@ -5,7 +5,6 @@ using System.Linq;
 
 namespace HanabiSolver.Library.Game
 {
-	// TODO Create a read-only interface for Player!
 	public interface IReadOnlyPlayer
 	{
 		IReadOnlyList<Card> Cards { get; }
@@ -13,12 +12,6 @@ namespace HanabiSolver.Library.Game
 
 		IEnumerable<Card> InformationAffectedCards(Suite suite);
 		IEnumerable<Card> InformationAffectedCards(Number number);
-	}
-
-	public interface IPlayer : IReadOnlyPlayer
-	{
-		//void ReceiveInformation(Suite suite);
-		new IReadOnlyDictionary<Card, Information> Information { get; }
 	}
 
 	public interface IInformationReceiver
@@ -31,7 +24,18 @@ namespace HanabiSolver.Library.Game
 	{
 	}
 
-	public class Player : IPlayer, IInformationReceiver
+
+	public interface IPlayer : IInformationReceiverReadOnlyPlayer
+	{
+		void Discard(Card card);
+		void GiveInformation(IInformationReceiverReadOnlyPlayer otherPlayer, Suite suite);
+		void GiveInformation(IInformationReceiverReadOnlyPlayer otherPlayer, Number number);
+		bool CanGiveInformation(IReadOnlyPlayer otherPlayer, Suite suite);
+		bool CanGiveInformation(IReadOnlyPlayer otherPlayer, Number number);
+		void Play(Card card);
+	}
+
+	public class Player : IPlayer
 	{
 		private readonly List<Card> cards;
 		private readonly Dictionary<Card, Information> information = new Dictionary<Card, Information>();

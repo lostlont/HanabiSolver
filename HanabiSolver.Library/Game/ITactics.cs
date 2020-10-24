@@ -2,6 +2,6 @@
 {
 	public interface ITactics
 	{
-		void Apply(IPlayer currentPlayer);
+		void Apply(IGameState gameState);
 	}
 }
