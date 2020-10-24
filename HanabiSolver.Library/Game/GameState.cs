@@ -3,7 +3,15 @@ using System.Linq;
 
 namespace HanabiSolver.Library.Game
 {
-	public class GameState
+	public interface IReadOnlyGameState
+	{
+		IReadOnlyTable Table { get; }
+		IReadOnlyList<IPlayer> Players { get; }
+		IPlayer CurrentPlayer { get; }
+		IPlayer NextPlayer { get; }
+	}
+
+	public class GameState : IReadOnlyGameState
 	{
 		public GameState(Table table, IReadOnlyList<IPlayer> players)
 			: this(table, players, players.First())
@@ -31,5 +39,7 @@ namespace HanabiSolver.Library.Game
 				return nextPlayer ?? Players.First();
 			}
 		}
+
+		IReadOnlyTable IReadOnlyGameState.Table => Table;
 	}
 }

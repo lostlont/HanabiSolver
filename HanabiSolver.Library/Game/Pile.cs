@@ -3,11 +3,14 @@ using System.Linq;
 
 namespace HanabiSolver.Library.Game
 {
-	public interface IPile
+	public interface IReadOnlyPile
 	{
 		IReadOnlyCollection<Card> Cards { get; }
 		Card? Top { get; }
+	}
 
+	public interface IPile : IReadOnlyPile
+	{
 		void Add(Card card);
 	}
 

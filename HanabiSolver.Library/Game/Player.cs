@@ -5,13 +5,30 @@ using System.Linq;
 
 namespace HanabiSolver.Library.Game
 {
-	public interface IPlayer
+	// TODO Create a read-only interface for Player!
+	public interface IReadOnlyPlayer
 	{
 		IReadOnlyList<Card> Cards { get; }
-		IReadOnlyDictionary<Card, Information> Information { get; }
+		IReadOnlyDictionary<Card, IReadOnlyInformation> Information { get; }
 	}
 
-	public class Player : IPlayer
+	public interface IPlayer : IReadOnlyPlayer
+	{
+		//void ReceiveInformation(Suite suite);
+		new IReadOnlyDictionary<Card, Information> Information { get; }
+	}
+
+	public interface IInformationReceiver
+	{
+		void ReceiveInformation(Suite suite);
+		void ReceiveInformation(Number number);
+	}
+
+	public interface IInformationReceiverReadOnlyPlayer : IReadOnlyPlayer, IInformationReceiver
+	{
+	}
+
+	public class Player : IPlayer, IInformationReceiver
 	{
 		private readonly List<Card> cards;
 		private readonly Dictionary<Card, Information> information = new Dictionary<Card, Information>();
@@ -19,6 +36,8 @@ namespace HanabiSolver.Library.Game
 		public IReadOnlyList<Card> Cards => cards;
 		public IReadOnlyDictionary<Card, Information> Information => information;
 		public Table Table { get; }
+
+		IReadOnlyDictionary<Card, IReadOnlyInformation> IReadOnlyPlayer.Information => (IReadOnlyDictionary<Card, IReadOnlyInformation>)Information;
 
 		public Player(IEnumerable<Card> cards, Table table)
 		{
@@ -37,7 +56,7 @@ namespace HanabiSolver.Library.Game
 			Table.InformationTokens.Replenish();
 		}
 
-		public void GiveInformation(IPlayer otherPlayer, Suite suite)
+		public void GiveInformation(IInformationReceiverReadOnlyPlayer otherPlayer, Suite suite)
 		{
 			if (Table.InformationTokens.Amount <= 0)
 				throw new InvalidOperationException();
@@ -48,11 +67,10 @@ namespace HanabiSolver.Library.Game
 				throw new InvalidOperationException();
 
 			Table.InformationTokens.Use();
-			foreach (var information in informedCards.Select(c => otherPlayer.Information[c]))
-				information.IsSuiteKnown = true;
+			otherPlayer.ReceiveInformation(suite);
 		}
 
-		public void GiveInformation(IPlayer otherPlayer, Number number)
+		public void GiveInformation(IInformationReceiverReadOnlyPlayer otherPlayer, Number number)
 		{
 			if (Table.InformationTokens.Amount <= 0)
 				throw new InvalidOperationException();
@@ -63,34 +81,62 @@ namespace HanabiSolver.Library.Game
 				throw new InvalidOperationException();
 
 			Table.InformationTokens.Use();
-			foreach (var information in informedCards.Select(c => otherPlayer.Information[c]))
-				information.IsNumberKnown = true;
+			otherPlayer.ReceiveInformation(number);
 		}
 
-		public bool CanGiveInformation(IPlayer otherPlayer, Suite suite)
+		public bool CanGiveInformation(IReadOnlyPlayer otherPlayer, Suite suite)
 		{
 			return (Table.InformationTokens.Amount > 0)
 				&& InformationAffectedCards(otherPlayer, suite).Any();
 		}
 
-		public bool CanGiveInformation(IPlayer otherPlayer, Number number)
+		public bool CanGiveInformation(IReadOnlyPlayer otherPlayer, Number number)
 		{
 			return (Table.InformationTokens.Amount > 0)
 				&& InformationAffectedCards(otherPlayer, number).Any();
 		}
 
-		private IEnumerable<Card> InformationAffectedCards(IPlayer otherPlayer, Suite suite)
+		public void ReceiveInformation(Suite suite)
 		{
+			var informedCards = InformationAffectedCards(suite);
+			foreach (var information in informedCards.Select(c => Information[c]))
+				information.IsSuiteKnown = true;
+		}
+
+		public void ReceiveInformation(Number number)
+		{
+			var informedCards = InformationAffectedCards(number);
+			foreach (var information in informedCards.Select(c => Information[c]))
+				information.IsNumberKnown = true;
+		}
+
+		private IEnumerable<Card> InformationAffectedCards(IReadOnlyPlayer otherPlayer, Suite suite)
+		{
+			// TODO Will these be needed?
 			return otherPlayer.Cards
 				.Where(c => c.Suite == suite)
 				.Where(c => otherPlayer.Information[c].IsSuiteKnown == false);
 		}
 
-		private IEnumerable<Card> InformationAffectedCards(IPlayer otherPlayer, Number number)
+		private IEnumerable<Card> InformationAffectedCards(Suite suite)
+		{
+			return Cards
+				.Where(c => c.Suite == suite)
+				.Where(c => Information[c].IsSuiteKnown == false);
+		}
+
+		private IEnumerable<Card> InformationAffectedCards(IReadOnlyPlayer otherPlayer, Number number)
 		{
 			return otherPlayer.Cards
 				.Where(c => c.Number == number)
 				.Where(c => otherPlayer.Information[c].IsNumberKnown == false);
+		}
+
+		private IEnumerable<Card> InformationAffectedCards(Number number)
+		{
+			return Cards
+				.Where(c => c.Number == number)
+				.Where(c => Information[c].IsNumberKnown == false);
 		}
 
 		public void Play(Card card)
