@@ -151,9 +151,12 @@ namespace HanabiSolver.Library.Game
 		private void DrawCard()
 		{
 			var newCard = Table.Deck.Draw();
-			cards.Insert(0, newCard);
+			if (newCard != null)
+			{
+				cards.Insert(0, newCard);
 
-			information[newCard] = new Information();
+				information[newCard] = new Information();
+			}
 		}
 
 		private void RemoveCard(Card card)

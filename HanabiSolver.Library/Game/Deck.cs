@@ -6,12 +6,12 @@ namespace HanabiSolver.Library.Game
 	public interface IReadOnlyDeck
 	{
 		IReadOnlyCollection<Card> Cards { get; }
-		Card Top { get; }
+		Card? Top { get; }
 	}
 
 	public interface IDeck : IReadOnlyDeck
 	{
-		Card Draw();
+		Card? Draw();
 	}
 
 	public partial class Deck : IDeck
@@ -20,18 +20,16 @@ namespace HanabiSolver.Library.Game
 
 		public IReadOnlyCollection<Card> Cards => cards;
 
-		public Card Top => cards.Peek();
+		public Card? Top => cards.TryPeek(out var card) ? card : null;
 
 		public Deck(IEnumerable<Card> cards)
 		{
 			this.cards = new Queue<Card>(cards);
 		}
 
-		public Card Draw()
+		public Card? Draw()
 		{
-			return cards.Dequeue();
+			return cards.TryDequeue(out var card) ? card : null;
 		}
-
-		public bool CanDraw() => cards.Any();
 	}
 }
