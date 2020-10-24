@@ -21,12 +21,19 @@ namespace HanabiSolver.Library.Tests.Builders
 
 		private static IDeck BuildSomeDeck()
 		{
+			var cards = new List<Card>
+			{
+				new Card(Suite.Red, Number.One),
+				new Card(Suite.Green, Number.Two),
+				new Card(Suite.Blue, Number.Three),
+			};
 			var deck = new Mock<IDeck>();
 			deck
-				.SetupSequence(d => d.Draw())
-				.Returns(new Card(Suite.Red, Number.One))
-				.Returns(new Card(Suite.Green, Number.Two))
-				.Returns(new Card(Suite.Blue, Number.Three));
+				.Setup(d => d.Cards)
+				.Returns(cards);
+			deck
+				.Setup(d => d.Draw())
+				.Returns(cards.First());
 
 			return deck.Object;
 		}

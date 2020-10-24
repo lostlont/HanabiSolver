@@ -87,8 +87,6 @@ namespace HanabiSolver.Library.Tests.Game
 			gameManager.IsEnded.Should().BeFalse();
 		}
 
-		// TODO Test IsEnded when deck became empty and last round finished!
-
 		private IPile BuildPile(Suite suite) => BuildPile(suite, Number.Five);
 
 		private IPile BuildPile(Suite suite, Number topNumber)

@@ -30,14 +30,13 @@ namespace HanabiSolver.Library.Tests.Game
 		[InlineData(2)]
 		public void PlayRunsUntilGameIsEnded(int turnsUntilEnd)
 		{
-			var players = BuildSomePlayers();
 			var gameState = new GameStateBuilder
 			{
 				Table = new TableBuilder
 				{
 					PlayedCards = BuildFinishingPlayedCards(turnsUntilEnd),
 				}.Build(),
-				Players = players,
+				Players = BuildSomePlayers(),
 			}.Build();
 			var gameManager = new GameManager(gameState);
 
@@ -83,14 +82,13 @@ namespace HanabiSolver.Library.Tests.Game
 		[InlineData(3)]
 		public void PlayAppliesTacticsWithGameState(int turnsUntilEnd)
 		{
-			var players = BuildSomePlayers(3);
 			var gameState = new GameStateBuilder
 			{
 				Table = new TableBuilder
 				{
 					PlayedCards = BuildFinishingPlayedCards(turnsUntilEnd),
 				}.Build(),
-				Players = players,
+				Players = BuildSomePlayers(3),
 			}.Build();
 			var gameManager = new GameManager(gameState);
 
@@ -111,14 +109,13 @@ namespace HanabiSolver.Library.Tests.Game
 		[Fact]
 		public void PlayAppliesFirstApplicableTactics()
 		{
-			var players = BuildSomePlayers(3);
 			var gameState = new GameStateBuilder
 			{
 				Table = new TableBuilder
 				{
 					PlayedCards = BuildFinishingPlayedCards(1),
 				}.Build(),
-				Players = players,
+				Players = BuildSomePlayers(),
 			}.Build();
 			var gameManager = new GameManager(gameState);
 
@@ -140,6 +137,35 @@ namespace HanabiSolver.Library.Tests.Game
 			gameManager.Play(tacticsList);
 
 			applicableTactics.Verify(t => t.Apply(gameState), Times.Once);
+		}
+
+		[Theory]
+		[InlineData(3)]
+		public void PlayEndsGameAfterOneRoundWhenDeckBecomesEmpty(int playerCount)
+		{
+			var gameState = new GameStateBuilder
+			{
+				Table = new TableBuilder
+				{
+					Deck = BuildEmptyDeck(),
+				}.Build(),
+				Players = BuildSomePlayers(playerCount),
+			}.Build();
+			var gameManager = new GameManager(gameState);
+
+			var tactics = new Mock<ITactics>(MockBehavior.Strict);
+			tactics
+				.Setup(t => t.CanApply(gameState))
+				.Returns(true);
+			tactics
+				.Setup(t => t.Apply(gameState));
+			var tacticsList = new List<ITactics>
+			{
+				tactics.Object,
+			};
+			gameManager.Play(tacticsList);
+
+			tactics.Verify(t => t.Apply(gameState), Times.Exactly(playerCount));
 		}
 
 		private Dictionary<Suite, IPile> BuildFinishingPlayedCards(int turnsUntilFinish)
@@ -177,6 +203,15 @@ namespace HanabiSolver.Library.Tests.Game
 				.Setup(p => p.Top)
 				.Returns(new Card(suite, Number.Five));
 			return pile.Object;
+		}
+
+		private IDeck BuildEmptyDeck()
+		{
+			var deck = new Mock<IDeck>(MockBehavior.Strict);
+			deck
+				.Setup(d => d.Cards)
+				.Returns(new List<Card>());
+			return deck.Object;
 		}
 
 		private List<IPlayer> BuildSomePlayers() => BuildSomePlayers(3);

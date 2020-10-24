@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using HanabiSolver.Library.Extensions;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace HanabiSolver.Library.Game
 {
 	public class GameManager
 	{
+		private IPlayer? lastPlayer = null;
+
 		public GameManager(GameState gameState)
 		{
 			GameState = gameState;
@@ -17,7 +20,8 @@ namespace HanabiSolver.Library.Game
 			{
 				return
 					(GameState.Table.FuseTokens.Amount >= GameState.Table.FuseTokens.MaxAmount) ||
-					GameState.Table.PlayedCards.Values.All(pile => pile.Top?.Number == Number.Five);
+					GameState.Table.PlayedCards.Values.All(pile => pile.Top?.Number == Number.Five) ||
+					(GameState.CurrentPlayer == lastPlayer);
 			}
 		}
 
@@ -28,6 +32,9 @@ namespace HanabiSolver.Library.Game
 				tactics
 					.First(t => t.CanApply(GameState))
 					.Apply(GameState);
+
+				if ((lastPlayer == null) && GameState.Table.Deck.Cards.None())
+					lastPlayer = GameState.CurrentPlayer;
 
 				GameState.CurrentPlayer = GameState.NextPlayer;
 			}
