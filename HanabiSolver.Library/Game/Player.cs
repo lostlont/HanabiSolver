@@ -10,6 +10,8 @@ namespace HanabiSolver.Library.Game
 	{
 		IReadOnlyList<Card> Cards { get; }
 		IReadOnlyDictionary<Card, IReadOnlyInformation> Information { get; }
+
+		IEnumerable<Card> InformationAffectedCards(Suite suite);
 	}
 
 	public interface IPlayer : IReadOnlyPlayer
@@ -61,11 +63,6 @@ namespace HanabiSolver.Library.Game
 			if (Table.InformationTokens.Amount <= 0)
 				throw new InvalidOperationException();
 
-			var informedCards = InformationAffectedCards(otherPlayer, suite);
-
-			if (informedCards.None())
-				throw new InvalidOperationException();
-
 			Table.InformationTokens.Use();
 			otherPlayer.ReceiveInformation(suite);
 		}
@@ -87,7 +84,7 @@ namespace HanabiSolver.Library.Game
 		public bool CanGiveInformation(IReadOnlyPlayer otherPlayer, Suite suite)
 		{
 			return (Table.InformationTokens.Amount > 0)
-				&& InformationAffectedCards(otherPlayer, suite).Any();
+				&& otherPlayer.InformationAffectedCards(suite).Any();
 		}
 
 		public bool CanGiveInformation(IReadOnlyPlayer otherPlayer, Number number)
@@ -99,6 +96,9 @@ namespace HanabiSolver.Library.Game
 		public void ReceiveInformation(Suite suite)
 		{
 			var informedCards = InformationAffectedCards(suite);
+			if (informedCards.None())
+				throw new InvalidOperationException();
+
 			foreach (var information in informedCards.Select(c => Information[c]))
 				information.IsSuiteKnown = true;
 		}
@@ -118,7 +118,7 @@ namespace HanabiSolver.Library.Game
 				.Where(c => otherPlayer.Information[c].IsSuiteKnown == false);
 		}
 
-		private IEnumerable<Card> InformationAffectedCards(Suite suite)
+		public IEnumerable<Card> InformationAffectedCards(Suite suite)
 		{
 			return Cards
 				.Where(c => c.Suite == suite)

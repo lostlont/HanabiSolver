@@ -1,8 +1,10 @@
 ﻿using FluentAssertions;
+using HanabiSolver.Library.Extensions;
 using HanabiSolver.Library.Game;
 using HanabiSolver.Library.Tests.Builders;
 using Moq;
 using System.Collections.Generic;
+using System.Linq;
 using Xunit;
 
 namespace HanabiSolver.Library.Tests.Game
@@ -10,83 +12,72 @@ namespace HanabiSolver.Library.Tests.Game
 	public partial class PlayerTests
 	{
 		[Fact]
-		public void CanGiveInformationForExistingSuite()
+		public void InformationAffectedCardsReturnsCardsInSameSuite()
 		{
 			const Suite ownedSuite = Suite.White;
 			var ownedCard = new Card(ownedSuite, Number.One);
+			var ownedCards = new List<Card> { ownedCard };
 
-			var player = new PlayerBuilder().Build();
-			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
-			otherPlayer
-				.Setup(p => p.Cards)
-				.Returns(new List<Card> { ownedCard });
-			otherPlayer
-				.Setup(p => p.Information[ownedCard])
-				.Returns(new Information());
+			var player = new PlayerBuilder
+			{
+				Cards = ownedCards
+			}.Build();
 
-			player.CanGiveInformation(otherPlayer.Object, ownedSuite).Should().BeTrue();
+			player.InformationAffectedCards(ownedSuite).Should().Equal(ownedCards);
 		}
 
 		[Fact]
-		public void CanNotGiveInformationForNonExistingSuite()
+		public void InformationAffectedCardsReturnsEmptyForNonExistingSuite()
 		{
 			const Suite nonOwnedSuite = Suite.Red;
 
-			var player = new PlayerBuilder().Build();
-			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
-			otherPlayer
-				.Setup(p => p.Cards)
-				.Returns(new List<Card>());
+			var player = new PlayerBuilder
+			{
+				Cards = new List<Card> { new Card(Suite.White, Number.One) },
+			}.Build();
 
-			player.CanGiveInformation(otherPlayer.Object, nonOwnedSuite).Should().BeFalse();
+			player.InformationAffectedCards(nonOwnedSuite).Should().BeEmpty();
 		}
 
 		[Fact]
-		public void CanGiveInformationForPartiallyInformedSuite()
+		public void InformationAffectedCardsReturnsCardsWithNoInformation()
 		{
 			const Suite suite = Suite.White;
 			var informedCard = new Card(suite, Number.One);
 			var nonInformedCard = new Card(suite, Number.Two);
 			
-			var player = new PlayerBuilder().Build();
-			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
-			otherPlayer
-				.Setup(p => p.Cards)
-				.Returns(new List<Card>
+			var player = new PlayerBuilder
+			{
+				Cards = new List<Card>
 				{
 					informedCard,
 					nonInformedCard,
-				});
-			otherPlayer
-				.Setup(p => p.Information)
-				.Returns(new Dictionary<Card, Information>
-				{
-					[informedCard] = new Information { IsSuiteKnown = true },
-					[nonInformedCard] = new Information { IsSuiteKnown = false },
-				});
+				},
+			}.Build();
+			player.Information[informedCard].IsSuiteKnown = true;
 
-			player.CanGiveInformation(otherPlayer.Object, suite).Should().BeTrue();
+			var expectedCards = nonInformedCard.AsEnumerable();
+			player.InformationAffectedCards(suite).Should().Equal(expectedCards);
 		}
 
 		[Fact]
-		public void CanNotGiveInformationForFullyInformedSuite()
+		public void InformationAffectedCardsReturnsEmptyForFullyInformedSuite()
 		{
 			const Suite suite = Suite.White;
 
-			var player = new PlayerBuilder().Build();
-			var otherPlayer = new Mock<IPlayer>(MockBehavior.Strict);
-			otherPlayer
-				.Setup(p => p.Cards)
-				.Returns(new List<Card>
+			var player = new PlayerBuilder
+			{
+				Cards = new List<Card>
 				{
 					new Card(suite, Number.One),
 					new Card(suite, Number.Two),
-				});
-			otherPlayer
-				.Setup(p => p.Information[It.IsAny<Card>()])
-				.Returns(new Information { IsSuiteKnown = true });
+				},
+			}.Build();
 
-			player.CanGiveInformation(otherPlayer.Object, suite).Should().BeFalse();
+			foreach (var card in player.Cards)
+				player.Information[card].IsSuiteKnown = true;
+
+			player.InformationAffectedCards(suite).Should().BeEmpty();
 		}
 
 		[Fact]
@@ -121,6 +112,7 @@ namespace HanabiSolver.Library.Tests.Game
 				.Setup(p => p.Cards)
 				.Returns(new List<Card> { ownedCard });
 			otherPlayer
+				.As<IReadOnlyPlayer>()
 				.Setup(p => p.Information[ownedCard])
 				.Returns(new Information());
 
@@ -158,8 +150,9 @@ namespace HanabiSolver.Library.Tests.Game
 					nonInformedCard,
 				});
 			otherPlayer
+				.As<IReadOnlyPlayer>()
 				.Setup(p => p.Information)
-				.Returns(new Dictionary<Card, Information>
+				.Returns(new Dictionary<Card, IReadOnlyInformation>
 				{
 					[informedCard] = new Information { IsNumberKnown = true },
 					[nonInformedCard] = new Information { IsNumberKnown = false },
@@ -183,6 +176,7 @@ namespace HanabiSolver.Library.Tests.Game
 					new Card(Suite.Yellow, number),
 				});
 			otherPlayer
+				.As<IReadOnlyPlayer>()
 				.Setup(p => p.Information[It.IsAny<Card>()])
 				.Returns(new Information { IsNumberKnown = true });
 
