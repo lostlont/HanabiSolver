@@ -96,6 +96,18 @@ namespace HanabiSolver.Library.Tests.Game
 			player.Information[cardWithDifferentNumber].IsNumberKnown.Should().BeFalse();
 		}
 
-		// TODO Tests for throwing!
+		[Fact]
+		public void ReceiveInformationWithNumberThrowsForNoCardsAffected()
+		{
+			var player = new PlayerBuilder
+			{
+				Cards = Enumerable.Empty<Card>(),
+			}.Build();
+
+			player
+				.Invoking(p => p.ReceiveInformation(Number.One))
+				.Should()
+				.Throw<InvalidOperationException>();
+		}
 	}
 }

@@ -158,21 +158,6 @@ namespace HanabiSolver.Library.Tests.Game
 		}
 
 		[Fact]
-		public void GiveInformationWithNumberThrowsForNoSuchNumber()
-		{
-			var player = new PlayerBuilder().Build();
-			var otherPlayer = new Mock<IInformationReceiverReadOnlyPlayer>(MockBehavior.Strict);
-			otherPlayer
-				.Setup(p => p.Cards)
-				.Returns(new List<Card>());
-
-			player
-				.Invoking(p => p.GiveInformation(otherPlayer.Object, Number.Five))
-				.Should()
-				.Throw<InvalidOperationException>();
-		}
-
-		[Fact]
 		public void GiveInformationWithNumberCallsReceiveInformation()
 		{
 			var ownedCard = new Card(Suite.White, Number.One);
