@@ -45,5 +45,29 @@ namespace HanabiSolver.Library.Tests.Game
 
 			players.CurrentPlayer.Should().Be(somePlayers[1]);
 		}
+
+		[Fact]
+		public void NextPlayerIsTheSecondForCurrentPlayerAsFirst()
+		{
+			var players = new GameState(someTable, somePlayers);
+
+			players.NextPlayer.Should().Be(somePlayers[1]);
+		}
+
+		[Fact]
+		public void NextPlayerIsTheThirdForCurrentPlayerAsSecond()
+		{
+			var players = new GameState(someTable, somePlayers, somePlayers[1]);
+
+			players.NextPlayer.Should().Be(somePlayers[2]);
+		}
+
+		[Fact]
+		public void NextPlayerIsTheFirstForCurrentPlayerAsLast()
+		{
+			var players = new GameState(someTable, somePlayers, somePlayers.Last());
+
+			players.NextPlayer.Should().Be(somePlayers.First());
+		}
 	}
 }

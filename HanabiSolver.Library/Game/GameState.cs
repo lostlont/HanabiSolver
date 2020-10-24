@@ -20,5 +20,16 @@ namespace HanabiSolver.Library.Game
 		public Table Table { get; }
 		public IReadOnlyList<IPlayer> Players { get; }
 		public IPlayer CurrentPlayer { get; set; }
+		public IPlayer NextPlayer
+		{
+			get
+			{
+				var nextPlayer = Players
+					.SkipWhile(player => player != CurrentPlayer)
+					.Skip(1)
+					.FirstOrDefault();
+				return nextPlayer ?? Players.First();
+			}
+		}
 	}
 }

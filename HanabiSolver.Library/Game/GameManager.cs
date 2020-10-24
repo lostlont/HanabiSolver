@@ -19,14 +19,11 @@ namespace HanabiSolver.Library.Game
 					GameState.Table.PlayedCards.Values.All(pile => pile.Top?.Number == Number.Five);
 			}
 		}
+		// TODO Simplify coupling by hiding some of these in GameState?
 
 		public void Play()
 		{
-			var nextPlayer = GameState.Players
-				.SkipWhile(p => p != GameState.CurrentPlayer)
-				.Skip(1)
-				.FirstOrDefault();
-			GameState.CurrentPlayer = nextPlayer ?? GameState.Players.First();
+			GameState.CurrentPlayer = GameState.NextPlayer;
 		}
 	}
 }
