@@ -44,7 +44,7 @@ namespace HanabiSolver.Library.Game
 		public IReadOnlyDictionary<Card, Information> Information => information;
 		public Table Table { get; }
 
-		IReadOnlyDictionary<Card, IReadOnlyInformation> IReadOnlyPlayer.Information => (IReadOnlyDictionary<Card, IReadOnlyInformation>)Information;
+		IReadOnlyDictionary<Card, IReadOnlyInformation> IReadOnlyPlayer.Information => Information.ToDictionary(e => e.Key, e => (IReadOnlyInformation)e.Value);
 
 		public Player(IEnumerable<Card> cards, Table table)
 		{

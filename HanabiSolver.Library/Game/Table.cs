@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace HanabiSolver.Library.Game
 {
@@ -23,7 +24,7 @@ namespace HanabiSolver.Library.Game
 		IReadOnlyPile IReadOnlyTable.DiscardPile => DiscardPile;
 		IReadOnlyTokens IReadOnlyTable.InformationTokens => InformationTokens;
 		IReadOnlyTokens IReadOnlyTable.FuseTokens => FuseTokens;
-		IReadOnlyDictionary<Suite, IReadOnlyPile> IReadOnlyTable.PlayedCards => (IReadOnlyDictionary<Suite, IReadOnlyPile>)PlayedCards;
+		IReadOnlyDictionary<Suite, IReadOnlyPile> IReadOnlyTable.PlayedCards => PlayedCards.ToDictionary(e => e.Key, e => (IReadOnlyPile)e.Value);
 
 		public Table(IDeck deck, IPile discardPile, ITokens informationTokens, ITokens fuseTokens, Dictionary<Suite, IPile> playedCards)
 		{
