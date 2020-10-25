@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HanabiSolver.Library.Utils
+namespace HanabiSolver.Common.Utils
 {
 	public static class EnumUtils
 	{

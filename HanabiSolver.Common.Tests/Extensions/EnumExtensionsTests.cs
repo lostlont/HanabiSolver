@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
-using HanabiSolver.Library.Extensions;
+using HanabiSolver.Common.Extensions;
 using Xunit;
 
-namespace HanabiSolver.Library.Tests.Extensions
+namespace HanabiSolver.Common.Tests.Extensions
 {
 	public class EnumExtensionsTests
 	{

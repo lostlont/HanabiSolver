@@ -6,11 +6,17 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HanabiSolver.Library.Tests", "HanabiSolver.Library.Tests\HanabiSolver.Library.Tests.csproj", "{92746989-112D-4399-B648-6663D3F3255B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HanabiSolver.Library", "HanabiSolver.Library\HanabiSolver.Library.csproj", "{59B47B46-55C1-4221-913E-66B9D0FFD8C8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BA0B3CCF-7734-4AE4-9E67-8AAE1FE2271F} = {BA0B3CCF-7734-4AE4-9E67-8AAE1FE2271F}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HanabiSolver", "HanabiSolver\HanabiSolver.csproj", "{D5A38118-14AD-4AF3-A692-ADD8B36DE275}"
-	ProjectSection(ProjectDependencies) = postProject
-		{59B47B46-55C1-4221-913E-66B9D0FFD8C8} = {59B47B46-55C1-4221-913E-66B9D0FFD8C8}
-	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HanabiSolver.Solver", "HanabiSolver.Solver\HanabiSolver.Solver.csproj", "{BB0BC776-7176-4C4B-84C2-70D4DE219795}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HanabiSolver.Common", "HanabiSolver.Common\HanabiSolver.Common.csproj", "{BA0B3CCF-7734-4AE4-9E67-8AAE1FE2271F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HanabiSolver.Common.Tests", "HanabiSolver.Common.Tests\HanabiSolver.Common.Tests.csproj", "{D269FB00-AA93-4FBE-B087-7BBB76C96959}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +36,18 @@ Global
 		{D5A38118-14AD-4AF3-A692-ADD8B36DE275}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5A38118-14AD-4AF3-A692-ADD8B36DE275}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5A38118-14AD-4AF3-A692-ADD8B36DE275}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB0BC776-7176-4C4B-84C2-70D4DE219795}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB0BC776-7176-4C4B-84C2-70D4DE219795}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB0BC776-7176-4C4B-84C2-70D4DE219795}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB0BC776-7176-4C4B-84C2-70D4DE219795}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BA0B3CCF-7734-4AE4-9E67-8AAE1FE2271F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA0B3CCF-7734-4AE4-9E67-8AAE1FE2271F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA0B3CCF-7734-4AE4-9E67-8AAE1FE2271F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA0B3CCF-7734-4AE4-9E67-8AAE1FE2271F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D269FB00-AA93-4FBE-B087-7BBB76C96959}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D269FB00-AA93-4FBE-B087-7BBB76C96959}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D269FB00-AA93-4FBE-B087-7BBB76C96959}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D269FB00-AA93-4FBE-B087-7BBB76C96959}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

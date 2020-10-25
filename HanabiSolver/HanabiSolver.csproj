@@ -5,6 +5,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HanabiSolver.Library\HanabiSolver.Library.csproj" />
+    <ProjectReference Include="..\HanabiSolver.Solver\HanabiSolver.Solver.csproj" />
   </ItemGroup>
 </Project>

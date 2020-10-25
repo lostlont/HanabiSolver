@@ -1,5 +1,5 @@
-﻿using HanabiSolver.Library.Game;
-using HanabiSolver.Library.Utils;
+﻿using HanabiSolver.Common.Utils;
+using HanabiSolver.Library.Game;
 using Moq;
 using System.Collections.Generic;
 using System.Linq;

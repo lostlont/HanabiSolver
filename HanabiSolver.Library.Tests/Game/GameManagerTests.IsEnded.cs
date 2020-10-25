@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
+using HanabiSolver.Common.Utils;
 using HanabiSolver.Library.Game;
 using HanabiSolver.Library.Tests.Builders;
-using HanabiSolver.Library.Utils;
 using Moq;
 using System.Linq;
 using Xunit;

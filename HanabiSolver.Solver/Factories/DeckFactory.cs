@@ -1,12 +1,12 @@
-﻿using HanabiSolver.Library.Game;
-using HanabiSolver.Library.Utils;
+﻿using HanabiSolver.Common.Utils;
+using HanabiSolver.Library.Game;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HanabiSolver.Factories
+namespace HanabiSolver.Solver.Factories
 {
-	public static class DeckFactory
+	internal static class DeckFactory
 	{
 		public static IDeck CreateDeck()
 		{

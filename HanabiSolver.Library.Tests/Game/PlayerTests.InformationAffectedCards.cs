@@ -1,5 +1,5 @@
 ﻿using FluentAssertions;
-using HanabiSolver.Library.Extensions;
+using HanabiSolver.Common.Extensions;
 using HanabiSolver.Library.Game;
 using HanabiSolver.Library.Tests.Builders;
 using System.Collections.Generic;

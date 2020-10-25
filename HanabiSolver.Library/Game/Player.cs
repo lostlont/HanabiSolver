@@ -1,4 +1,4 @@
-﻿using HanabiSolver.Library.Extensions;
+﻿using HanabiSolver.Common.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;

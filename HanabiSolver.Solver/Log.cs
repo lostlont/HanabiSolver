@@ -2,9 +2,9 @@
 using System;
 using System.Linq;
 
-namespace HanabiSolver
+namespace HanabiSolver.Solver
 {
-	public static class Log
+	internal static class Log
 	{
 		public static void Info(GameManager gameManager)
 		{

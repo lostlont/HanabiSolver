@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
-using HanabiSolver.Library.Utils;
+using HanabiSolver.Common.Utils;
 using System.Collections.Generic;
 using Xunit;
 
-namespace HanabiSolver.Library.Tests.Utils
+namespace HanabiSolver.Common.Tests.Utils
 {
 	public class EnumUtilsTests
 	{

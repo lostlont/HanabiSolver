@@ -1,10 +1,10 @@
 ﻿using FluentAssertions;
-using HanabiSolver.Library.Extensions;
+using HanabiSolver.Common.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace HanabiSolver.Library.Tests.Extensions
+namespace HanabiSolver.Common.Tests.Extensions
 {
 	public partial class EnumerableExtensionsTests
 	{

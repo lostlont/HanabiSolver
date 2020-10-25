@@ -1,9 +1,9 @@
-﻿using HanabiSolver.Library.Utils;
+﻿using HanabiSolver.Common.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HanabiSolver.Library.Extensions
+namespace HanabiSolver.Common.Extensions
 {
 	public static class EnumExtensions
 	{

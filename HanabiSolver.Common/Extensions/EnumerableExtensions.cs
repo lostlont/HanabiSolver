@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HanabiSolver.Library.Extensions
+namespace HanabiSolver.Common.Extensions
 {
 	public static class EnumerableExtensions
 	{
@@ -14,6 +14,19 @@ namespace HanabiSolver.Library.Extensions
 		public static IEnumerable<TSource> ExceptAt<TSource>(this IEnumerable<TSource> source, int index)
 		{
 			return source.Where((element, i) => i != index);
+		}
+
+		public static int Median(this IEnumerable<int> source)
+		{
+			return (int)source.Middle().Average();
+		}
+
+		public static IEnumerable<TSource> Middle<TSource>(this IEnumerable<TSource> source)
+		{
+			if (source.Count() % 2 == 1)
+				return source.Skip(source.Count() / 2).Take(1);
+			else
+				return source.Skip(source.Count() / 2 - 1).Take(2);
 		}
 
 		public static bool None<TSource>(this IEnumerable<TSource> source)

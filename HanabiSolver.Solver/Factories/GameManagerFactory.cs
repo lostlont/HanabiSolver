@@ -1,11 +1,11 @@
-﻿using HanabiSolver.Library.Game;
-using HanabiSolver.Library.Utils;
+﻿using HanabiSolver.Common.Utils;
+using HanabiSolver.Library.Game;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HanabiSolver.Factories
+namespace HanabiSolver.Solver.Factories
 {
-	public class GameManagerFactory
+	internal static class GameManagerFactory
 	{
 		public static GameManager Create()
 		{
