@@ -61,7 +61,7 @@ namespace HanabiSolver.Library.Tests.Game
 					PlayedCards = EnumUtils.Values<Suite>()
 						.ToDictionary(
 							suite => suite,
-							suite => BuildPile(suite)),
+							suite => BuildFullPile(suite)),
 				}.Build(),
 			}.Build();
 			var gameManager = new GameManager(gameState);
@@ -85,17 +85,6 @@ namespace HanabiSolver.Library.Tests.Game
 			var gameManager = new GameManager(gameState);
 
 			gameManager.IsEnded.Should().BeFalse();
-		}
-
-		private IPile BuildPile(Suite suite) => BuildPile(suite, Number.Five);
-
-		private IPile BuildPile(Suite suite, Number topNumber)
-		{
-			var result = new Mock<IPile>(MockBehavior.Strict);
-			result
-				.Setup(p => p.Top)
-				.Returns(new Card(suite, topNumber));
-			return result.Object;
 		}
 	}
 }

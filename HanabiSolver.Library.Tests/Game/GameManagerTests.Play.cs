@@ -179,32 +179,6 @@ namespace HanabiSolver.Library.Tests.Game
 						: BuildFullPile(suite));
 		}
 
-		private IPile BuildFinishingPile(Suite suite, int turnsUntilFinish)
-		{
-			var playedCards = new Mock<IPile>(MockBehavior.Strict);
-			var topSequence = playedCards.SetupSequence(p => p.Top);
-
-			var card = new Card(suite, Number.Four);
-			foreach (var turnIndex in Enumerable.Range(0, turnsUntilFinish))
-				topSequence.Returns(card);
-
-			var lastCard = new Card(suite, Number.Five);
-			topSequence
-				.Returns(lastCard)
-				.Returns(lastCard);
-
-			return playedCards.Object;
-		}
-
-		private IPile BuildFullPile(Suite suite)
-		{
-			var pile = new Mock<IPile>(MockBehavior.Strict);
-			pile
-				.Setup(p => p.Top)
-				.Returns(new Card(suite, Number.Five));
-			return pile.Object;
-		}
-
 		private IDeck BuildEmptyDeck()
 		{
 			var deck = new Mock<IDeck>(MockBehavior.Strict);
