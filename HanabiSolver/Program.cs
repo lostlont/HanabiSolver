@@ -1,4 +1,5 @@
-﻿using HanabiSolver.Solver.Builders;
+﻿using HanabiSolver.Library.Game;
+using HanabiSolver.Solver.Builders;
 using HanabiSolver.Tactics;
 using System;
 
@@ -8,13 +9,23 @@ namespace HanabiSolver
 	{
 		public static void Main(string[] args)
 		{
-			const int iterationCount = 1000;
+			const int iterationCount = 10_000;
 
 			var result = SolverBuilder.New
 				.WithIterationCount(iterationCount)
-				.WithTactics(new PlayFirst())
+				.WithTactics(new ITactics[]
+				{
+					new SaveNextChop(),
+					new PlayLeftmostClued(),
+					new DiscardRightmostUnknown(),
+					new PlayFirst(),
+				})
+				//.WithLoggingEnabled()
 				.Build()
 				.Solve();
+
+			// TODO PlayPlayableClued tactics
+			// TODO Give information tactics?
 
 			Console.WriteLine($"Playing {iterationCount}:");
 			Console.WriteLine($"  min     = {result.Min}");

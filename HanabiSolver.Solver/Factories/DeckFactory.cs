@@ -35,6 +35,5 @@ namespace HanabiSolver.Solver.Factories
 				_ => throw new InvalidOperationException(),
 			};
 		}
-
 	}
 }

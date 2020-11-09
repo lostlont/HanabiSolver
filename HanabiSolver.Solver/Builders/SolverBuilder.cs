@@ -17,12 +17,6 @@ namespace HanabiSolver.Solver.Builders
 			return this;
 		}
 
-		public SolverBuilder WithTactics(ITactics tactics)
-		{
-			this.tactics.Add(tactics);
-			return this;
-		}
-
 		public SolverBuilder WithTactics(params ITactics[] tactics)
 		{
 			this.tactics.AddRange(tactics);
