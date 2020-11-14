@@ -9,9 +9,13 @@ namespace HanabiSolver.Solver
 		public static void Info(GameManager gameManager)
 		{
 			Info(gameManager.GameState);
-			foreach (var player in gameManager.GameState.Players)
-				Info(player);
+			foreach (var index in Enumerable.Range(0, gameManager.GameState.Players.Count))
+			{
+				var player = gameManager.GameState.Players[index];
+				Info(player, index + 1);
+			}
 			Console.WriteLine($"Score: {gameManager.Score}");
+			Console.WriteLine();
 		}
 
 		private static void Info(IGameState gameState)
@@ -23,17 +27,46 @@ namespace HanabiSolver.Solver
 			foreach (var suite in gameState.Table.PlayedCards.Keys)
 			{
 				var pile = gameState.Table.PlayedCards[suite];
-				var cards = string.Join(", ", pile.Cards);
-				Console.WriteLine($"  {suite}: {cards}");
+				Console.Write($"  {suite}:");
+				foreach (var card in pile.Cards)
+				{
+					Console.Write(" ");
+					Info(card);
+				}
+				Console.WriteLine();
 			}
 		}
 
-		private static void Info(IReadOnlyPlayer player)
+		private static void Info(IReadOnlyPlayer player, int number)
 		{
-			Console.WriteLine("Player:");
-			var cardsWithInformation = player.Cards.Select(card => $"{card}{InformationText(player.Information[card])}");
-			var cards = string.Join(", ", cardsWithInformation);
-			Console.WriteLine($"  Cards: {cards}");
+			Console.Write($"Player {number}:");
+			foreach (var card in player.Cards)
+			{
+				Console.Write(" ");
+				Info(card);
+				Console.Write(InformationText(player.Information[card]));
+			}
+			Console.WriteLine();
+		}
+
+		private static void Info(Card card)
+		{
+			Console.ForegroundColor = ColorOf(card.Suite);
+			Console.Write((int)card.Number + 1);
+			Console.ResetColor();
+		}
+
+		private static ConsoleColor ColorOf(Suite suite)
+		{
+			return suite switch
+			{
+				Suite.White => ConsoleColor.White,
+				Suite.Yellow => ConsoleColor.DarkYellow,
+				Suite.Green => ConsoleColor.DarkGreen,
+				Suite.Blue => ConsoleColor.Blue,
+				Suite.Red => ConsoleColor.DarkRed,
+				_ => throw new InvalidOperationException(),
+			};
 		}
 
 		private static string InformationText(IReadOnlyInformation information)

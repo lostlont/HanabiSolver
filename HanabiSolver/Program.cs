@@ -16,15 +16,17 @@ namespace HanabiSolver
 				.WithTactics(new ITactics[]
 				{
 					new SaveNextChop(),
+					new CluePlayable(),
 					new PlayLeftmostClued(),
+					new DiscardAlreadyPlayed(),
 					new DiscardRightmostUnknown(),
+					new PlayPlayable(),
 					new PlayFirst(),
 				})
 				//.WithLoggingEnabled()
 				.Build()
 				.Solve();
 
-			// TODO PlayPlayableClued tactics
 			// TODO Give information tactics?
 
 			Console.WriteLine($"Playing {iterationCount}:");

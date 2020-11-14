@@ -15,7 +15,7 @@ namespace HanabiSolver
 
 			var newInformation = (lastInformation != null)
 				? ListNewInformation(lastInformation, player)
-				: player.Information.Keys.ToList();
+				: player.Cards.Where(c => !Utils.IsUnknownCard(player, c)).ToList();
 
 			lastPlayerInformation[player] = Copy(player.Information);
 			newPlayerInformation[player] = newInformation;
@@ -40,7 +40,7 @@ namespace HanabiSolver
 					if (!Equals(lastInformationOnCard, currentInformationOnCard))
 						result.Add(currentCard);
 				}
-				else
+				else if (!Utils.IsUnknown(currentInformationOnCard))
 				{
 					result.Add(currentCard);
 				}

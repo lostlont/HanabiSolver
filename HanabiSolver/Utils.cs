@@ -1,6 +1,5 @@
 ﻿using HanabiSolver.Library.Game;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,6 +7,12 @@ namespace HanabiSolver
 {
 	public static class Utils
 	{
+		public static bool IsKnownCard(IReadOnlyPlayer player, Card card)
+			=> IsKnown(player.Information[card]);
+
+		public static bool IsKnown(IReadOnlyInformation information)
+			=> information.IsSuiteKnown && information.IsNumberKnown;
+
 		public static bool IsUnknownCard(IReadOnlyPlayer player, Card card)
 			=> IsUnknown(player.Information[card]);
 
@@ -35,14 +40,6 @@ namespace HanabiSolver
 		public static int PlayedSimilarCount(IGameState gameState, Card card)
 		{
 			return SimilarCount(gameState.Table.PlayedCards[card.Suite].Cards, card);
-		}
-
-		public static int SavedSimilarCount(IGameState gameState, Card card)
-		{
-			var saved = gameState.Players
-				.Where(p => p != gameState.CurrentPlayer)
-				.SelectMany(p => p.Cards.Where(c => !IsUnknownCard(p, c)));
-			return SimilarCount(saved, card);
 		}
 
 		public static int SimilarCount(IEnumerable<Card> cards, Card card)
