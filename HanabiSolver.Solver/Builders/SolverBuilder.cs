@@ -1,13 +1,14 @@
 ﻿using HanabiSolver.Library.Game;
+using System;
 using System.Collections.Generic;
 
 namespace HanabiSolver.Solver.Builders
 {
 	public class SolverBuilder
 	{
-		private readonly List<ITactics> tactics = new List<ITactics>();
+		private readonly List<Func<ITactics>> tactics = new List<Func<ITactics>>();
 		private int iterationCount = 1;
-		private bool isLoggingEnabled = false;
+		private ILog log = new Log { Enabled = false };
 
 		public static SolverBuilder New => new SolverBuilder();
 
@@ -17,21 +18,21 @@ namespace HanabiSolver.Solver.Builders
 			return this;
 		}
 
-		public SolverBuilder WithTactics(params ITactics[] tactics)
+		public SolverBuilder WithTactics(params Func<ITactics>[] tactics)
 		{
 			this.tactics.AddRange(tactics);
 			return this;
 		}
 
-		public SolverBuilder WithLoggingEnabled(bool enabled = true)
+		public SolverBuilder WithLogger(ILog log)
 		{
-			isLoggingEnabled = enabled;
+			this.log = log;
 			return this;
 		}
 
 		public ISolver Build()
 		{
-			return new Solver(tactics, iterationCount, isLoggingEnabled);
+			return new Solver(tactics, iterationCount, log);
 		}
 	}
 }

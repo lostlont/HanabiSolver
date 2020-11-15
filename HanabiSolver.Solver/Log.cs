@@ -4,56 +4,90 @@ using System.Linq;
 
 namespace HanabiSolver.Solver
 {
-	internal static class Log
+	public interface ILog
 	{
-		public static void Info(GameManager gameManager)
+		void Write(string message);
+		void WriteLine();
+		void WriteLine(string message);
+		void Info(GameManager gameManager);
+		void Info(IGameState gameState);
+		void Info(Card card);
+	}
+
+	public class Log : ILog
+	{
+		public bool Enabled { get; set; } = true;
+
+		public void Write(string message)
 		{
-			Info(gameManager.GameState);
-			foreach (var index in Enumerable.Range(0, gameManager.GameState.Players.Count))
-			{
-				var player = gameManager.GameState.Players[index];
-				Info(player, index + 1);
-			}
-			Console.WriteLine($"Score: {gameManager.Score}");
-			Console.WriteLine();
+			if (Enabled)
+				Console.Write(message);
 		}
 
-		private static void Info(IGameState gameState)
+		public void WriteLine()
 		{
-			Console.WriteLine($"Deck with {gameState.Table.Deck.Cards.Count} cards");
-			Console.WriteLine($"Information tokens are {gameState.Table.InformationTokens.Amount}/{gameState.Table.InformationTokens.MaxAmount}");
-			Console.WriteLine($"Fuse tokens are {gameState.Table.FuseTokens.Amount}/{gameState.Table.FuseTokens.MaxAmount}");
-			Console.WriteLine("Played cards:");
+			if (Enabled)
+				Console.WriteLine();
+		}
+
+		public void WriteLine(string message)
+		{
+			if (Enabled)
+				Console.WriteLine(message);
+		}
+
+		public void Info(GameManager gameManager)
+		{
+			Info(gameManager.GameState);
+			WriteLine($"Score: {gameManager.Score}");
+			WriteLine();
+		}
+
+		public void Info(IGameState gameState)
+		{
+			WriteLine($"Deck with {gameState.Table.Deck.Cards.Count} cards");
+			WriteLine($"Information tokens are {gameState.Table.InformationTokens.Amount}/{gameState.Table.InformationTokens.MaxAmount}");
+			WriteLine($"Fuse tokens are {gameState.Table.FuseTokens.Amount}/{gameState.Table.FuseTokens.MaxAmount}");
+			WriteLine("Played cards:");
 			foreach (var suite in gameState.Table.PlayedCards.Keys)
 			{
 				var pile = gameState.Table.PlayedCards[suite];
-				Console.Write($"  {suite}:");
+				Write($"  {suite}:");
 				foreach (var card in pile.Cards)
 				{
-					Console.Write(" ");
+					Write(" ");
 					Info(card);
 				}
-				Console.WriteLine();
+				WriteLine();
+			}
+
+			foreach (var index in Enumerable.Range(0, gameState.Players.Count))
+			{
+				var player = gameState.Players[index];
+				Info(player, index + 1);
 			}
 		}
 
-		private static void Info(IReadOnlyPlayer player, int number)
+		private void Info(IReadOnlyPlayer player, int number)
 		{
-			Console.Write($"Player {number}:");
+			Write($"Player {number}:");
 			foreach (var card in player.Cards)
 			{
-				Console.Write(" ");
+				Write(" ");
 				Info(card);
-				Console.Write(InformationText(player.Information[card]));
+				Write(InformationText(player.Information[card]));
 			}
-			Console.WriteLine();
+			WriteLine();
 		}
 
-		private static void Info(Card card)
+		public void Info(Card card)
 		{
-			Console.ForegroundColor = ColorOf(card.Suite);
-			Console.Write((int)card.Number + 1);
-			Console.ResetColor();
+			if (Enabled)
+			{
+				Console.ForegroundColor = ColorOf(card.Suite);
+				Console.Write((int)card.Number + 1);
+				Console.ResetColor();
+			}
 		}
 
 		private static ConsoleColor ColorOf(Suite suite)
@@ -61,7 +95,7 @@ namespace HanabiSolver.Solver
 			return suite switch
 			{
 				Suite.White => ConsoleColor.White,
-				Suite.Yellow => ConsoleColor.DarkYellow,
+				Suite.Yellow => ConsoleColor.Yellow,
 				Suite.Green => ConsoleColor.DarkGreen,
 				Suite.Blue => ConsoleColor.Blue,
 				Suite.Red => ConsoleColor.DarkRed,
